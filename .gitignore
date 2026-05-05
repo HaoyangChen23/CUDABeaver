@@ -1,11 +1,26 @@
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
+
+# Reviewer-side artifacts written during evaluation runs.
 outputs/
+memory/
+analysis_out/
+
+# Caches created by the harness's compile/eval pipeline.
+harness/.cache/
+.cache/
+
+# Editor / OS
 .env
 .vscode/
 .idea/
+.DS_Store
+
+# Profiler artifacts
 *.nsys-rep
 *.ncu-rep
+
 # Created by scripts/prepare_benchmark.sh — points at reviewer's dataset dir.
 /data

@@ -2,9 +2,21 @@
 
 ## One-time setup
 
+The dataset (213 instances + bundled CUTLASS / ThunderKittens headers) ships
+as a separate repository. Clone it as a sibling of this code package, then
+run the setup scripts:
+
 ```bash
+# Step 1 — clone the dataset alongside this repo.
+cd ..   # parent of neurips2026_code/
+git clone https://huggingface.co/datasets/neurips26-anon/cuda-debugger-bench  neurips2026_dataset
+cd neurips2026_code/
+
+# Step 2 — set up the python env + register vendored kernelbench (.pth).
 bash setup_env.sh
 source .venv/bin/activate
+
+# Step 3 — symlink the dataset's flat layout into <code_root>/data/.
 bash scripts/prepare_benchmark.sh ../neurips2026_dataset
 ```
 

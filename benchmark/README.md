@@ -3,7 +3,7 @@
 The companion CUDA-Debugger-Bench dataset is published separately on
 HuggingFace:
 
-    https://huggingface.co/datasets/anonymous-neurips2026/cuda-debugger-bench
+    https://huggingface.co/datasets/neurips26-anon/cuda-debugger-bench
 
 Download with `huggingface-cli download` (or `datasets.load_dataset`) and
 point the harness at the resulting dataset directory.
