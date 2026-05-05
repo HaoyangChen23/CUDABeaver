@@ -1,0 +1,154 @@
+"""
+Compile and test module.
+
+Extracted from run_experiment.py. Handles:
+  1. Copy testbench to workspace (preserving symlinks)
+  2. Write solution file (solution.cu, solution.py, or custom path)
+  3. Set up include/helper headers
+  4. Run build command (nvcc, python static check, make, etc.)
+  5. Run test command (binary, python eval, make run, etc.)
+
+Supports multiple task types via input_meta["solution_file"]:
+  - "solution.cu" (default) — standard CUDA tasks
+  - "solution.py"           — kernelbench Python tasks
+  - "kernels/sub/file.cu"   — thunderkittens tasks (custom path)
+"""
+
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+from .generate_headers import setup_include_dir
+from .subprocess_util import run_pg
+
+
+def _fix_python_cmd(cmd: str) -> str:
+    """Replace bare 'python' calls with the current interpreter path.
+
+    Handles 'python -c', 'python script.py', etc. without affecting
+    'python3' or words like 'pythonpath'.
+    """
+    import re
+    return re.sub(r'\bpython\b(?!3)', sys.executable, cmd)
+
+
+def compile_code(
+    solution_code: str,
+    task_stem: str,
+    dataset_dir: Path,
+    input_meta: dict,
+    workdir: Path,
+    timeout: int = 60,
+) -> tuple[bool, str]:
+    """
+    Compile solution.cu in a temporary workspace.
+    Returns (build_ok, build_output).
+    """
+    # Library-bypass / structural pre-check (rejects #include cutlass etc.)
+    from .static_checker import validate_solution
+    solution_file = input_meta.get("solution_file", "solution.cu")
+    chk = validate_solution(solution_code, solution_file)
+    if not chk.valid:
+        msg = "Static check failed:\n" + "\n".join(f"  - {e}" for e in chk.errors)
+        return False, msg
+
+    task_workdir = workdir / task_stem
+    if task_workdir.exists():
+        shutil.rmtree(task_workdir)
+    task_workdir.mkdir(parents=True)
+
+    # Copy testbench files
+    testbench_dir = dataset_dir / "testbench" / task_stem
+    test_src = testbench_dir / "test"
+    test_dst = task_workdir / "test"
+    if test_src.exists() and test_src.is_dir():
+        shutil.copytree(test_src, test_dst)
+
+    include_src = testbench_dir / "include"
+    if include_src.exists() and include_src.is_dir():
+        shutil.copytree(include_src, task_workdir / "include")
+
+    # Copy remaining items (preserve symlinks for reference_sources)
+    for item in testbench_dir.iterdir():
+        dst = task_workdir / item.name
+        if not dst.exists():
+            if item.is_symlink():
+                os.symlink(os.readlink(item), dst)
+            elif item.is_dir():
+                shutil.copytree(item, dst)
+            else:
+                shutil.copy2(item, dst)
+
+    # Write solution to the appropriate file
+    solution_file = input_meta.get("solution_file", "solution.cu")
+    solution_path = task_workdir / solution_file
+    solution_path.parent.mkdir(parents=True, exist_ok=True)
+    solution_path.write_text(solution_code, encoding="utf-8")
+
+    # Auto-generate headers from prompts
+    setup_include_dir(task_stem, dataset_dir, task_workdir)
+
+    # applied-kernels-aware build path: skip input.json's build_command and call applied_kernels_eval directly
+    from .applied_kernels_eval import is_applied_kernels_task, applied_kernels_build
+    if is_applied_kernels_task(input_meta):
+        return applied_kernels_build(input_meta["task_id"], task_workdir, timeout=max(timeout, 300))
+
+    # Default path — input.json build_command + nvcc
+    build_cmd = _fix_python_cmd(input_meta["build_command"])
+    build_env = os.environ.copy()
+    # Ensure the current Python's bin dir is first in PATH
+    python_bin = Path(sys.executable).parent
+    build_env["PATH"] = str(python_bin) + os.pathsep + build_env.get("PATH", "")
+    try:
+        result = run_pg(
+            build_cmd,
+            shell=True,
+            cwd=str(task_workdir),
+            timeout=timeout,
+            env=build_env,
+        )
+        output = result.stdout + "\n" + result.stderr
+        build_ok = result.returncode == 0
+    except subprocess.TimeoutExpired:
+        output = "[BUILD TIMEOUT]"
+        build_ok = False
+
+    return build_ok, output.strip()
+
+
+def run_test(
+    task_stem: str,
+    input_meta: dict,
+    workdir: Path,
+    timeout: int = 30,
+) -> tuple[int | None, str]:
+    """
+    Run the compiled test. Returns (returncode, test_output).
+    """
+    task_workdir = workdir / task_stem
+    # applied-kernels-aware test path
+    from .applied_kernels_eval import is_applied_kernels_task, applied_kernels_test
+    if is_applied_kernels_task(input_meta):
+        return applied_kernels_test(input_meta["task_id"], task_workdir, timeout=max(timeout, 300))
+
+    test_cmd = _fix_python_cmd(input_meta["test_command"])
+    # Inherit current Python environment
+    test_env = os.environ.copy()
+    python_bin = Path(sys.executable).parent
+    test_env["PATH"] = str(python_bin) + os.pathsep + test_env.get("PATH", "")
+    try:
+        result = run_pg(
+            test_cmd,
+            shell=True,
+            cwd=str(task_workdir),
+            timeout=timeout,
+            env=test_env,
+        )
+        output = result.stdout + "\n" + result.stderr
+        return result.returncode, output.strip()
+    except subprocess.TimeoutExpired:
+        return -1, "[TEST TIMEOUT] Execution timed out"

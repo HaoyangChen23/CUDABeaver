@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+outputs/
+.env
+.vscode/
+.idea/
+*.nsys-rep
+*.ncu-rep
+# Created by scripts/prepare_benchmark.sh — points at reviewer's dataset dir.
+/data

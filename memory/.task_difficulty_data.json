@@ -1,0 +1,11 @@
+{
+  "cuda_104": {
+    "google/gemma-4-31B-it": true
+  },
+  "cublas_applications_154": {
+    "google/gemma-4-31B-it": false
+  },
+  "kernelbench_level1_16": {
+    "google/gemma-4-31B-it": false
+  }
+}
