@@ -1,0 +1,31 @@
+Implement a CUDA kernel to generate a heatmap that transforms floating-point input values to unsigned char output values in the range [0, 255].
+
+The kernel signature is defined in `include/heatmap.h`:
+
+```cuda
+__global__ void k_generateHeatmap(float * input_d,
+                                  unsigned char * output_d,
+                                  const float minValue,
+                                  const float maxValue,
+                                  const int numElementsX,
+                                  const int numElementsY);
+```
+
+The parameters `minValue` and `maxValue` define the boundaries for the input data range.
+
+Requirements:
+- Input values at minValue should map to 0
+- Input values at maxValue should map to 255
+- Input values outside [minValue, maxValue] should be clamped to the nearest boundary
+- The linear mapping between these boundaries must be properly rounded to the nearest integer (not truncated) when converting to unsigned char
+
+Example behavior:
+```
+k_generateHeatmap({-1500.0f, -1650.0f, -1800.0f, -1950.0f, -2100.0f, 2250.0f, 2400.0f, 2550.0f, 2700.0f, 2850.0f},
+                  output_d, 1900.0f, 2800.0f, 10, 1)
+→ output_d: {0, 0, 0, 0, 0, 99, 142, 184, 227, 255}
+
+k_generateHeatmap({-1.0f, -0.8f, -0.6f, -0.4f, -0.2f, 0.0f, 0.2f, 0.4f, 0.6f, 0.8f},
+                  output_d, -1.0f, 1.0f, 10, 1)
+→ output_d: {0, 25, 51, 76, 102, 128, 153, 178, 204, 230}
+```

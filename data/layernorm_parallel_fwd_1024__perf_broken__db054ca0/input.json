@@ -1,0 +1,23 @@
+{
+  "task_id": "layernorm_parallel_fwd_1024",
+  "schema_version": 2,
+  "difficulty": "unknown",
+  "level": "applied_kernels_class",
+  "tags": [
+    "layernorm",
+    "forward",
+    "parallel"
+  ],
+  "build_command": " CUTLASS_DIR=./reference_sources/cutlass TK_DIR=./reference_sources/ThunderKittens",
+  "test_command": "",
+  "hardware": {
+    "min_sm": 80,
+    "tested_sms": [
+      80
+    ],
+    "required_features": []
+  },
+  "solution_file": "solution.cu",
+  "required_arch": null,
+  "arch_specific": false
+}

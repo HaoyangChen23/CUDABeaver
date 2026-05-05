@@ -1,0 +1,17 @@
+{
+  "id": "layernorm_bwd_256__perf_broken__566b11c0",
+  "task_family": "layernorm",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "NVIDIA Apex LayerNorm",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.cu",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 180,
+  "broken_start_hash": "566b11c046ae9c43"
+}

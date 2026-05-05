@@ -1,0 +1,17 @@
+{
+  "id": "cufft_samples_c2c_2d_1024x1024_fp32__perf_broken__68bdc8f8",
+  "task_family": "cufft_samples",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "NVIDIA cuFFT samples",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.cu",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 672,
+  "broken_start_hash": "68bdc8f8f7cbcbe9"
+}

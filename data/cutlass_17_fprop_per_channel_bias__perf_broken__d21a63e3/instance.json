@@ -1,0 +1,17 @@
+{
+  "id": "cutlass_17_fprop_per_channel_bias__perf_broken__d21a63e3",
+  "task_family": "cutlass",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "CUTLASS v3.5",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.h",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 279,
+  "broken_start_hash": "d21a63e30a8acf4d"
+}

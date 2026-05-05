@@ -1,0 +1,211 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "CUDA-Debugger-Bench",
+  "description": "213 broken CUDA kernels paired with reference implementations and testbenches for evaluating LLM debugging capability. Companion to anonymous NeurIPS 2026 E&D Track submission.",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "url": "https://github.com/<anonymous-account>/cuda-debugger-bench",
+  "version": "1.0.0",
+  "creator": {
+    "@type": "Organization",
+    "name": "Anonymous Authors (NeurIPS 2026 submission)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Anonymous Authors"
+  },
+  "datePublished": "2026-05-05",
+  "citeAs": "Anonymous Authors. CUDA-Debugger-Bench. NeurIPS 2026 E&D Track submission.",
+  "citation": "Anonymous Authors. CUDA-Debugger-Bench. NeurIPS 2026 E&D Track submission.",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "manifest.json",
+      "name": "manifest.json",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://github.com/<anonymous-account>/cuda-debugger-bench/blob/main/manifest.json",
+      "sha256": "37a1ac4ba4ca87c5c3995729f096341209f6954937dd5c4ab6a3cfac871990a6"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "instances",
+      "name": "instances",
+      "description": "213 broken-kernel instances.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "instances/id",
+          "name": "id",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].id"
+            }
+          },
+          "description": "Unique instance ID: <task_family>_<n>__<error_category>__<hash8>"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/task_family",
+          "name": "task_family",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].task_family"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/error_category",
+          "name": "error_category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].error_category"
+            }
+          },
+          "description": "One of: compile_error, logic_error, memory_crash, perf_broken, timeout"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/difficulty",
+          "name": "difficulty",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].difficulty"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/broken_start_hash",
+          "name": "broken_start_hash",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].broken_start_hash"
+            }
+          },
+          "description": "First 16 hex chars of sha256(broken_start file contents)"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/broken_start_lines",
+          "name": "broken_start_lines",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].broken_start_lines"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "instances/path",
+          "name": "path",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "manifest.json"
+            },
+            "extract": {
+              "jsonPath": "$.instances[*].path"
+            }
+          },
+          "description": "Relative path under data/ to this instance's per-file directory; broken_start.{cu,py,h}, reference.{cu,py}, prompt.txt, input.json (build/test commands), instance.json, and testbench/ live there."
+        }
+      ]
+    }
+  ],
+  "conformsTo": [
+    "http://mlcommons.org/croissant/1.0",
+    "http://mlcommons.org/croissant/RAI/1.0"
+  ],
+  "rai:dataCollection": "Broken CUDA kernels were collected by sampling iter-1 outputs from frontier LLMs (anonymous) on a held-out set of CUDA programming tasks; outputs that exhibited compile-error, logic-error, memory-crash, perf-broken, or timeout failures were curated as instances. References are author-written or sourced from CUTLASS / FlashAttention / cuFFT / KernelBench upstreams.",
+  "rai:dataCollectionType": "Manual curation of LLM outputs + import from public open-source kernels",
+  "rai:dataCollectionMissingData": "Tasks where no LLM-generated broken_start exhibited a target failure category were excluded. 8 reference-unstable kernels were trimmed during initial curation.",
+  "rai:dataCollectionRawData": "Raw LLM completions are not redistributed (would re-identify the source frontier model). Only the curated broken_start code is included.",
+  "rai:dataCollectionTimeframe": "April 2026 - May 2026",
+  "rai:dataImputationProtocol": "Not applicable - no imputation. Missing testbench / reference for any task -> task excluded.",
+  "rai:dataPreprocessingProtocol": "Source LLM outputs were only filtered for category match; no code rewriting beyond standardising file extensions and stripping comments that referenced the source LLM.",
+  "rai:dataManipulationProtocol": "Each broken_start is the unmodified LLM iter-1 output. Reference implementations are unmodified upstream code (CUTLASS, FlashAttention, cuFFT samples, ThunderKittens, KernelBench) or author-written for the curated CUDA programming pool.",
+  "rai:dataAnnotationProtocol": "Each instance is annotated with: task_family, error_category (5 buckets), difficulty (easy/medium/hard). Annotation by deterministic classifier - no human labeling step.",
+  "rai:dataAnnotationPlatform": "Custom Python classifier (harness/classifier.py in companion code repo)",
+  "rai:dataAnnotationAnalysis": "Inter-annotator agreement N/A (single deterministic classifier). Classifier validated against 50-instance manual review with 100% agreement.",
+  "rai:annotationsPerItem": "1 annotation per instance (deterministic)",
+  "rai:annotatorDemographics": "N/A - automated annotation only",
+  "rai:machineAnnotationTools": "Custom Python classifier; nvcc / KernelBench eval_kernel_against_ref for build+test-based category assignment",
+  "rai:dataBiases": "(a) Source LLM bias: broken_starts inherit failure-mode distributions of source models, biased toward common LLM mistakes. (b) Domain bias: 11 task families, weighted toward CUDA C++ + KernelBench Python; under-represents OpenCL, ROCm, Triton. (c) Difficulty skew: hard tasks cluster in compile_error / memory_crash; easy tasks dominate logic_error.",
+  "rai:dataUseCases": "Evaluating LLM debugging capability on GPU kernels. Comparing test-time strategies. Studying feedback-richness, history-depth, few-shot exemplar effects.",
+  "rai:dataLimitations": "Single-iteration debugging only - does not measure long-horizon (>5 round) repair. Single-GPU evaluation (NVIDIA Blackwell). Not a measure of from-scratch kernel generation. Performance numbers are hardware-specific.",
+  "rai:dataSocialImpact": "Low risk. Benchmark contains only public-domain CUDA programming patterns. No personal data. Dual-use: improved LLM debugging could accelerate GPU code generation.",
+  "rai:personalSensitiveInformation": "None. Dataset contains only kernel source code with no PII, no user-identifying content, no copyrighted text outside CC-licensed upstreams.",
+  "rai:dataReleaseMaintenancePlan": "Versioned releases on the public dataset hosting platform. v1.0 = NeurIPS 2026 submission snapshot. Future major versions on bug fix or task-pool expansion. Maintained by the authors through paper publication; long-term mirror planned via Zenodo DOI after acceptance.",
+  "rai:hasSyntheticData": true
+}

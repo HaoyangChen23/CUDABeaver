@@ -1,0 +1,17 @@
+{
+  "id": "cutlass_05_batched_gemm__perf_broken__3742c34f",
+  "task_family": "cutlass",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "CUTLASS v3.5",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.h",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 339,
+  "broken_start_hash": "3742c34f75226f94"
+}

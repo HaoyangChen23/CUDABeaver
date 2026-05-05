@@ -1,0 +1,39 @@
+Write a CUDA kernel with high occupancy to compute the average errors of multiple polynomials with a fixed number of trials. The kernel should be implemented in `solution.cu` according to the interface defined in `include/polynomial_error.h`.
+
+Each polynomial is evaluated using Horner's method, starting from the first coefficient. For a polynomial with coefficients c0, c1, c2, ..., c(n-1) and input value x, the evaluation proceeds as:
+- Start with result = c0
+- For each subsequent coefficient ci (where i goes from 1 to n-1): result = result * x + ci
+- This computes the nested form: ((...((c0 * x + c1) * x + c2) * x + ...) * x + c(n-1))
+
+All polynomials are approximations of the same target function, so they share the same expected values across trials. The average error for each polynomial should be calculated as (sum of fabs(expectedPolynomialValue - computedPolynomialValue)) / (number of trials).
+
+The coefficient array uses a strided layout in global memory. For polynomial p, the coefficient at position i is located at index: p + i * numPolynomials in the coefficients_d array.
+
+Enhance occupancy by using manual register spillover to shared memory for the coefficient data. The constant `NUM_COEFFICIENTS_IN_REGISTERS` (defined in the header) specifies how many coefficients should be kept in registers, with remaining coefficients spilled to shared memory.
+
+The signature of the CUDA kernel is:
+```cpp
+__global__ void k_computeAverageErrorsOfPolynomials(
+    int numPolynomials,
+    int numCoefficients,
+    int numTrials,
+    float* xValues_d,
+    float* expectedPolynomialValues_d,
+    float* coefficients_d,
+    float* averageErrors_d)
+```
+
+**Parameters:**
+- `numPolynomials`: Number of polynomials, with each CUDA thread assigned its own polynomial
+- `numCoefficients`: Number of coefficients per polynomial
+- `numTrials`: Number of test trials for calculating the average error
+- `xValues_d`: Array of x values for each trial (indexed by trial)
+- `expectedPolynomialValues_d`: Array of expected function values for each trial (indexed by trial, shared across all polynomials)
+- `coefficients_d`: Array of polynomial coefficients in strided layout (coefficient i of polynomial p is at index p + i * numPolynomials)
+- `averageErrors_d`: Output array for average error of each polynomial (indexed by polynomial)
+
+**Example behavior:**
+For polynomial with 3 coefficients [0.5, 0.5, 0.5] evaluated at x=0.3745:
+- result = 0.5
+- result = 0.5 * 0.3745 + 0.5 = 0.68725
+- result = 0.68725 * 0.3745 + 0.5 = 0.75736

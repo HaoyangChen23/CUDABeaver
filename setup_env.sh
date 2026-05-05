@@ -26,5 +26,5 @@ echo "  - vendored .pth:  $SITE_PACKAGES/applied_kernels_vendored.pth"
 echo
 echo "Next steps:"
 echo "  source .venv/bin/activate"
-echo "  bash scripts/prepare_benchmark.sh ../neurips2026_dataset"
+echo "  bash scripts/prepare_benchmark.sh"
 echo "  pytest tests/test_smoke.py"

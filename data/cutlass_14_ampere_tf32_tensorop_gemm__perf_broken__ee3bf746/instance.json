@@ -1,0 +1,17 @@
+{
+  "id": "cutlass_14_ampere_tf32_tensorop_gemm__perf_broken__ee3bf746",
+  "task_family": "cutlass",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "CUTLASS v3.5",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.h",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 485,
+  "broken_start_hash": "ee3bf7465b5aa3d6"
+}

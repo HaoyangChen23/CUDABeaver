@@ -1,0 +1,17 @@
+{
+  "id": "flashattention_bwd_hdim128_fp16__perf_broken__7170cc69",
+  "task_family": "flashattention",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "FlashAttention v2",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.cu",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 888,
+  "broken_start_hash": "7170cc69c3c81fdd"
+}

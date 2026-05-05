@@ -13,4 +13,4 @@ echo
 echo "Sanity check:"
 python3 -c "import kernelbench; print('  kernelbench:', kernelbench.__file__)"
 echo
-echo "Next: bash scripts/prepare_benchmark.sh ../neurips2026_dataset"
+echo "Next: bash scripts/prepare_benchmark.sh"

@@ -22,5 +22,11 @@ harness/.cache/
 *.nsys-rep
 *.ncu-rep
 
-# Created by scripts/prepare_benchmark.sh — points at reviewer's dataset dir.
-/data
+# Flat-layout helper dirs created by scripts/prepare_benchmark.sh.
+# (The 213 per-instance dirs under data/ are tracked; only these helpers
+# are ephemeral and reviewer-side regenerated.)
+/data/input/
+/data/prompts/
+/data/testbench/
+/data/references/
+data/*/testbench/reference_sources/

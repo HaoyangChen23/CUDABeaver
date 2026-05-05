@@ -1,0 +1,17 @@
+{
+  "id": "cutlass_23_ampere_gemm_operand_reduction_fusion__perf_broken__dcfc9baa",
+  "task_family": "cutlass",
+  "error_category": "perf_broken",
+  "difficulty": "medium",
+  "upstream_library": "CUTLASS v3.5",
+  "broken_start_provenance": "LLM-generated, anonymous frontier model",
+  "files": {
+    "broken_start": "broken_start.h",
+    "reference": "reference.cu",
+    "prompt": "prompt.txt",
+    "testbench": "testbench/",
+    "input_meta": "input.json"
+  },
+  "broken_start_lines": 491,
+  "broken_start_hash": "dcfc9baacdadd797"
+}

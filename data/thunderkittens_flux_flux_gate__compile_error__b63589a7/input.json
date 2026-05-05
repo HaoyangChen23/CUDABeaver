@@ -1,0 +1,14 @@
+{
+  "task_id": "thunderkittens_flux_flux_gate",
+  "schema_version": 2,
+  "difficulty": null,
+  "level": "thunderkittens",
+  "tags": [
+    "kernels",
+    "flux"
+  ],
+  "build_command": "cd kernels/flux && make GPU=RTX5070 clean && make GPU=RTX5070",
+  "test_command": "cd kernels/flux && make GPU=RTX5070 run",
+  "solution_file": "kernels/flux/flux_gate.cu",
+  "has_thunderkittens": true
+}

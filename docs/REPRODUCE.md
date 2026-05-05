@@ -2,33 +2,21 @@
 
 ## One-time setup
 
-The dataset (213 instances + bundled CUTLASS / ThunderKittens headers) ships
-as a separate repository. Clone it as a sibling of this code package, then
-run the setup scripts:
-
 ```bash
-# Step 1 — clone the dataset alongside this repo.
-cd ..   # parent of neurips2026_code/
-git clone https://huggingface.co/datasets/neurips26-anon/cuda-debugger-bench  neurips2026_dataset
-cd neurips2026_code/
-
-# Step 2 — set up the python env + register vendored kernelbench (.pth).
 bash setup_env.sh
 source .venv/bin/activate
-
-# Step 3 — symlink the dataset's flat layout into <code_root>/data/.
-bash scripts/prepare_benchmark.sh ../neurips2026_dataset
+bash scripts/prepare_benchmark.sh
 ```
 
-`setup_env.sh` creates a venv, installs `requirements.txt`, and registers the
-vendored upstream `kernelbench` package (`harness/_vendor/kernelbench/`,
-MIT-licensed, see `harness/_vendor/kernelbench/LICENSE.txt`) onto the venv's
-`site-packages` via a `.pth` file so `import kernelbench` works.
+`setup_env.sh` creates a venv, installs `requirements.txt`, and registers
+the vendored upstream `kernelbench` package (`harness/_vendor/kernelbench/`,
+MIT-licensed) onto the venv's `site-packages` via a `.pth` file so
+`import kernelbench` works.
 
-`prepare_benchmark.sh` materializes a flat `data/{input,prompts,testbench,
-references}/` symlink layout and adds per-testbench `reference_sources/`
-symlinks pointing into the bundled CUTLASS / ThunderKittens headers under
-`../neurips2026_dataset/data/_external/`. It is idempotent.
+`prepare_benchmark.sh` materializes the flat dataset layout the harness
+needs (`data/{input,prompts,testbench,references}/` symlinks pointing at
+each per-instance dir, plus per-testbench `reference_sources/` symlinks
+into the bundled CUTLASS / ThunderKittens headers). Idempotent; re-runnable.
 
 ## LLM endpoints — REQUIRED swap
 
@@ -54,7 +42,7 @@ need additional setup; all required code/headers are bundled:
 | Family                                  | n  | Bundled at                                          |
 |-----------------------------------------|----|-----------------------------------------------------|
 | cuda, cublas, cufft, cusolver, cusparse | 70 | (nvcc only)                                         |
-| cutlass                                 | 20 | `../neurips2026_dataset/data/_external/cutlass`     |
+| cutlass                                 | 20 | `data/_external/cutlass`     |
 | thunderkittens                          |  4 | testbench self-contained + bundled fallback         |
 | kernelbench                             | 84 | `harness/_vendor/kernelbench/` (registered via .pth)|
 | flashattention, layernorm, cufft_samples| 35 | `harness/applied_kernels_runner/` + reference_sources |
