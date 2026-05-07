@@ -28,5 +28,5 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Source: https://github.com/NVIDIA/cutlass (LICENSE.txt). Headers in this
-directory are bundled into the CUDA-Debugger-Bench dataset for reproducibility
+directory are bundled into the CUDABeaver dataset for reproducibility
 of Class 1 cutlass-family build commands. Bundled subset is unmodified.

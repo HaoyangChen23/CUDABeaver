@@ -8,7 +8,7 @@ task_categories:
   - text-generation
 task_ids:
   - language-modeling
-pretty_name: CUDA-Debugger-Bench
+pretty_name: CUDABeaver
 tags:
   - code
   - cuda
@@ -23,7 +23,7 @@ configs:
     data_files: data/*/instance.json
 ---
 
-# CUDA-Debugger-Bench
+# CUDABeaver
 
 A benchmark of **213 broken CUDA kernels** paired with reference
 implementations and runnable testbenches, designed to evaluate large
@@ -58,7 +58,6 @@ This single repository ships **everything** end-to-end:
 - [What's NOT in the package](#whats-not-in-the-package)
 - [Authors](#authors)
 - [License](#license)
-- [Citation](#citation)
 
 ---
 
@@ -474,16 +473,3 @@ Bundled third-party packages keep their own licenses:
 - `data/_external/ThunderKittens/` — MIT License (HazyResearch), see
   `data/_external/ThunderKittens/LICENSE.txt`
 
----
-
-## Citation
-
-```bibtex
-@misc{cuda-debugger-bench-2026,
-  title  = {CUDA-Debugger-Bench: Benchmarking LLM Debugging on GPU Kernels},
-  author = {Anonymous Authors},
-  year   = {2026},
-  note   = {NeurIPS 2026 D\&B Track submission, anonymous review version},
-  url    = {https://github.com/<anonymous-account>/cuda-debugger-bench}
-}
-```

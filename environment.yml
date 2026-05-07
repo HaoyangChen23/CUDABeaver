@@ -1,4 +1,4 @@
-# Conda environment for the CUDA-Debugger-Bench code package.
+# Conda environment for the CUDABeaver code package.
 #
 # Usage:
 #   conda env create -f environment.yml

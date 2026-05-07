@@ -21,6 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Source: https://github.com/HazyResearch/ThunderKittens (LICENSE). Headers in
-this directory are bundled into the CUDA-Debugger-Bench dataset for
+this directory are bundled into the CUDABeaver dataset for
 reproducibility of Class 1 thunderkittens-family build commands. Bundled
 subset is unmodified.

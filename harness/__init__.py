@@ -1,1 +1,1 @@
-"""Evaluation harness for CUDA-Debugger-Bench."""
+"""Evaluation harness for CUDABeaver."""
