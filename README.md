@@ -1,28 +1,3 @@
----
-license: cc-by-4.0
-language:
-  - en
-size_categories:
-  - n<1K
-task_categories:
-  - text-generation
-task_ids:
-  - language-modeling
-pretty_name: CUDABeaver
-tags:
-  - code
-  - cuda
-  - gpu
-  - kernel
-  - debugging
-  - llm-evaluation
-  - benchmark
-  - high-performance-computing
-configs:
-  - config_name: default
-    data_files: data/*/instance.json
----
-
 # CUDABeaver
 
 A benchmark of **213 broken CUDA kernels** paired with reference
