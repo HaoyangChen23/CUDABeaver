@@ -1,5 +1,9 @@
 # CUDABeaver
 
+<p align="center">
+  <img src="assets/repair.png" alt="CUDABeaver: LLM-driven CUDA kernel repair pipeline" width="100%">
+</p>
+
 A benchmark of **213 broken CUDA kernels** paired with reference
 implementations and runnable testbenches, designed to evaluate large
 language model (LLM) debugging capability on GPU kernel code.
