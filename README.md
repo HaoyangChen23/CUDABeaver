@@ -8,8 +8,6 @@ A benchmark of **213 broken CUDA kernels** paired with reference
 implementations and runnable testbenches, designed to evaluate large
 language model (LLM) debugging capability on GPU kernel code.
 
-NeurIPS 2026 Datasets and Benchmarks Track — anonymous submission.
-
 This single repository ships **everything** end-to-end:
 - the 213-instance dataset under `data/` (broken_start + reference + testbench + per-instance metadata),
 - the evaluation harness (`harness/`) that drives the gen → build → test → score loop,
