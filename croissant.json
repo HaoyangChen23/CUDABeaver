@@ -46,7 +46,7 @@
   },
   "@type": "sc:Dataset",
   "name": "CUDABeaver",
-  "description": "CUDABeaver is a benchmark of 213 reproducible CUDA debugging cases for evaluating LLM-based automated kernel repair. Each task starts from a real failing CUDA workspace (broken kernel + raw error log + native build/test harness) and is labeled with one of 5 curation-time error-category buckets (compile_error, logic_error, memory_crash, perf_broken, timeout), collapsed from an 8-category per-iteration classifier (compile_error, integration, environment_dependency, illegal_memory_access, out_of_memory, timeout, functional_correctness, perf_broken). The corpus spans 11 kernel families across two tiers: NVIDIA-library/curated (KernelBench, CUDA samples, cuSOLVER, cuSPARSE, cuBLAS, cuFFT, ThunderKittens, LayerNorm) and frontier-kernel (CUTLASS, FlashAttention v2). Designed for measuring debugging ability distinct from kernel generation, with support for performance-preservation evaluation. Companion to anonymous NeurIPS 2026 E&D Track submission.",
+  "description": "CUDABeaver is a benchmark of 212 reproducible CUDA debugging cases for evaluating LLM-based automated kernel repair. Each task starts from a real failing CUDA workspace (broken kernel + raw error log + native build/test harness) and is labeled with one of 5 curation-time error-category buckets (compile_error, logic_error, memory_crash, perf_broken, timeout), collapsed from an 8-category per-iteration classifier (compile_error, integration, environment_dependency, illegal_memory_access, out_of_memory, timeout, functional_correctness, perf_broken). The corpus spans 11 kernel families across two tiers: NVIDIA-library/curated (KernelBench, CUDA samples, cuSOLVER, cuSPARSE, cuBLAS, cuFFT, ThunderKittens, LayerNorm) and frontier-kernel (CUTLASS, FlashAttention v2). Designed for measuring debugging ability distinct from kernel generation, with support for performance-preservation evaluation. Companion to anonymous NeurIPS 2026 E&D Track submission.",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://anonymous.4open.science/r/CUDADebugBench-F33E/",
   "version": "1.0.0",
@@ -66,7 +66,7 @@
       "name": "manifest.json",
       "encodingFormat": "application/json",
       "contentUrl": "https://anonymous.4open.science/api/repo/CUDADebugBench-F33E/file/manifest.json",
-      "sha256": "37a1ac4ba4ca87c5c3995729f096341209f6954937dd5c4ab6a3cfac871990a6"
+      "sha256": "8fd27afe9a023985951fdc6f7a96ea967b34f36550d077767305b584058161b3"
     }
   ],
   "recordSet": [
@@ -74,7 +74,7 @@
       "@type": "cr:RecordSet",
       "@id": "instances",
       "name": "instances",
-      "description": "213 broken-kernel instances.",
+      "description": "212 broken-kernel instances.",
       "field": [
         {
           "@type": "cr:Field",

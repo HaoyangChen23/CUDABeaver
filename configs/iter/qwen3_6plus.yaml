@@ -14,7 +14,6 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/iter/qwen3_6plus"
   tasks:
-  - "cuda_10"
   - "cuda_104"
   - "cuda_107"
   - "cuda_110"

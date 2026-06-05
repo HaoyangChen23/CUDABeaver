@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "n_instances": 213,
+  "n_instances": 212,
   "license": "CC BY 4.0",
   "schema_version": "neurips2026_v1",
   "task_families": {
     "cublas": 3,
-    "cuda": 49,
+    "cuda": 48,
     "cufft": 2,
     "cufft_samples": 9,
     "cusolver": 10,
@@ -18,7 +18,7 @@
   },
   "error_category_distribution": {
     "compile_error": 105,
-    "logic_error": 45,
+    "logic_error": 44,
     "memory_crash": 18,
     "perf_broken": 41,
     "timeout": 4
@@ -68,15 +68,6 @@
       "difficulty": "medium",
       "broken_start_lines": 43,
       "broken_start_hash": "3c9d404eb582718d"
-    },
-    {
-      "id": "cuda_10__logic_error__d7fb64ae",
-      "path": "data/cuda_10__logic_error__d7fb64ae/",
-      "task_family": "cuda",
-      "error_category": "logic_error",
-      "difficulty": "medium",
-      "broken_start_lines": 76,
-      "broken_start_hash": "d7fb64ae0205a146"
     },
     {
       "id": "cuda_110__logic_error__957be815",

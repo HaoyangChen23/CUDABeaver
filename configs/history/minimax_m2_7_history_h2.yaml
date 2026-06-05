@@ -25,7 +25,6 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/history/minimax_m2_7_history_h2"
   tasks:
-  - "cuda_10"
   - "cuda_104"
   - "cuda_107"
   - "cuda_110"

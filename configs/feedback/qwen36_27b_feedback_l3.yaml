@@ -21,7 +21,6 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/feedback/qwen36_27b_feedback_l3"
   tasks:
-  - "cuda_10"
   - "cuda_104"
   - "cuda_107"
   - "cuda_110"

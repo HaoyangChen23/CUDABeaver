@@ -29,7 +29,6 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/fewshot/gemma4_fewshot_curated_K1"
   tasks:
-  - "cuda_10"
   - "cuda_104"
   - "cuda_107"
   - "cuda_110"

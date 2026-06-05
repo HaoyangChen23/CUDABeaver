@@ -1,7 +1,7 @@
 {
   "_doc": "Legacy-format task list reconstructed from the public dataset package. Used by harness/run_experiment.py --mode debug to look up broken_start metadata per cfg-stem.",
   "schema_version": "task_list/1.0",
-  "n_total": 200,
+  "n_total": 199,
   "entries": [
     {
       "task_id": "cublas_applications_154",
@@ -91,24 +91,6 @@
         "error_category": "compile_error",
         "lines": 43,
         "code_hash": "3c9d404eb582718d"
-      }
-    },
-    {
-      "task_id": "cuda_10",
-      "stem": "cuda_10",
-      "source": "anonymous_curated",
-      "dataset_paths": {
-        "input": "data/cuda_10__logic_error__d7fb64ae/input.json",
-        "prompts": "data/cuda_10__logic_error__d7fb64ae/prompt.txt",
-        "testbench": "data/cuda_10__logic_error__d7fb64ae/testbench",
-        "references": "data/cuda_10__logic_error__d7fb64ae/reference.cu"
-      },
-      "broken_start": {
-        "code_path": "data/cuda_10__logic_error__d7fb64ae/broken_start.cu",
-        "source_origin": "anonymous frontier model",
-        "error_category": "logic_error",
-        "lines": 76,
-        "code_hash": "d7fb64ae0205a146"
       }
     },
     {

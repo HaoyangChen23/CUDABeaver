@@ -16,7 +16,6 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/history/qwen3_6plus_history_h3"
   tasks:
-  - "cuda_10"
   - "cuda_104"
   - "cuda_107"
   - "cuda_110"
