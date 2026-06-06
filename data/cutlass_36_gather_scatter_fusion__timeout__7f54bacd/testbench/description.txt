@@ -2,8 +2,11 @@
 
 Gather-Scatter GEMM test harness — half input, float accumulate
 Extracted from CUTLASS example 36_gather_scatter_fusion
-Operation: D[gather_D[i], j] = alpha * sum_k A[gather_A[i], k] * B[k, j] + beta * C[gather_C[i], j]
+Operation: D[scatter_D[i], j] = alpha * sum_k A[gather_A[i], k] * B[k, j] + beta * C[gather_C[i], j]
 Rows of A/C/D are accessed via index arrays (gather for A/C, scatter for D).
+The bundled testbench uses large GEMM sizes. A naive one-thread-per-output
+implementation with a serial K loop can be functionally correct but will time
+out; use an optimized GEMM strategy appropriate for CUTLASS/tensor-core scale.
 The LLM must implement:
   cudaError_t GatherScatterGemm(
       int M, int N, int K, float alpha,
@@ -13,7 +16,7 @@ The LLM must implement:
       float const *C, int ldc, int const *gather_C,
       float *D, int ldd, int const *scatter_D);
 Row-major layouts. gather_A/gather_C/scatter_D are index arrays of length M.
-Compile: nvcc -O3 harness.cu solution.cu -o test && ./test
+Compile: make test CUTLASS_DIR=./reference_sources/cutlass TK_DIR=./reference_sources/ThunderKittens && ./test
 
 ---
 ## Test Harness (harness.cu)
@@ -26,7 +29,7 @@ Study it to understand the exact function signature, data types, and verificatio
  * Gather-Scatter GEMM test harness — half input, float accumulate
  * Extracted from CUTLASS example 36_gather_scatter_fusion
  *
- * Operation: D[gather_D[i], j] = alpha * sum_k A[gather_A[i], k] * B[k, j] + beta * C[gather_C[i], j]
+ * Operation: D[scatter_D[i], j] = alpha * sum_k A[gather_A[i], k] * B[k, j] + beta * C[gather_C[i], j]
  * Rows of A/C/D are accessed via index arrays (gather for A/C, scatter for D).
  *
  * The LLM must implement:
@@ -40,7 +43,7 @@ Study it to understand the exact function signature, data types, and verificatio
  *
  * Row-major layouts. gather_A/gather_C/scatter_D are index arrays of length M.
  *
- * Compile: nvcc -O3 harness.cu solution.cu -o test && ./test
+ * Compile: make test CUTLASS_DIR=./reference_sources/cutlass TK_DIR=./reference_sources/ThunderKittens && ./test
  */
 
 #include <cuda_fp16.h>

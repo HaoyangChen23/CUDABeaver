@@ -233,8 +233,8 @@ splits — every cfg sees the same 212 instances.
 | `kernelbench` | 84 | KernelBench level-1 + level-2 PyTorch-extension kernels |
 | `thunderkittens` | 4 | ThunderKittens linear-attn / mamba2 / based / flux kernels |
 
-Error category distribution: `compile_error` 105, `logic_error` 44,
-`perf_broken` 41, `memory_crash` 18, `timeout` 4.
+Error category distribution: `compile_error` 105, `logic_error` 43,
+`perf_broken` 41, `memory_crash` 18, `timeout` 5.
 
 ### Dataset creation
 

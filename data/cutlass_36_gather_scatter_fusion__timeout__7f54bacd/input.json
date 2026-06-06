@@ -3,7 +3,13 @@
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
-  "tags": [],
+  "tags": [
+    "timeout",
+    "gather-scatter",
+    "gemm",
+    "cutlass",
+    "tensor-core"
+  ],
   "build_command": "make test CUTLASS_DIR=./reference_sources/cutlass TK_DIR=./reference_sources/ThunderKittens",
   "test_command": "./test",
   "hardware": {

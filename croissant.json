@@ -66,7 +66,7 @@
       "name": "manifest.json",
       "encodingFormat": "application/json",
       "contentUrl": "https://anonymous.4open.science/api/repo/CUDADebugBench-F33E/file/manifest.json",
-      "sha256": "8fd27afe9a023985951fdc6f7a96ea967b34f36550d077767305b584058161b3"
+      "sha256": "6c6cd4a9a1a1325d68553fa76f069a85059e65cb5bf1b082fcb26dbbba344486"
     }
   ],
   "recordSet": [

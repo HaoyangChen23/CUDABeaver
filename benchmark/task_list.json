@@ -1664,15 +1664,15 @@
       "stem": "cutlass_36_gather_scatter_fusion",
       "source": "anonymous_curated",
       "dataset_paths": {
-        "input": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/input.json",
-        "prompts": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/prompt.txt",
-        "testbench": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/testbench",
-        "references": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/reference.cu"
+        "input": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/input.json",
+        "prompts": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/prompt.txt",
+        "testbench": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/testbench",
+        "references": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/reference.cu"
       },
       "broken_start": {
-        "code_path": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/broken_start.h",
+        "code_path": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/broken_start.h",
         "source_origin": "anonymous frontier model",
-        "error_category": "logic_error",
+        "error_category": "timeout",
         "lines": 91,
         "code_hash": "7f54bacdc3785caf"
       }

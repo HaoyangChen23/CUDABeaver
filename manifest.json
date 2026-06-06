@@ -18,10 +18,10 @@
   },
   "error_category_distribution": {
     "compile_error": 105,
-    "logic_error": 44,
+    "logic_error": 43,
     "memory_crash": 18,
     "perf_broken": 41,
-    "timeout": 4
+    "timeout": 5
   },
   "instances": [
     {
@@ -871,10 +871,10 @@
       "broken_start_hash": "b96deb1001c714cc"
     },
     {
-      "id": "cutlass_36_gather_scatter_fusion__logic_error__7f54bacd",
-      "path": "data/cutlass_36_gather_scatter_fusion__logic_error__7f54bacd/",
+      "id": "cutlass_36_gather_scatter_fusion__timeout__7f54bacd",
+      "path": "data/cutlass_36_gather_scatter_fusion__timeout__7f54bacd/",
       "task_family": "cutlass",
-      "error_category": "logic_error",
+      "error_category": "timeout",
       "difficulty": "medium",
       "broken_start_lines": 91,
       "broken_start_hash": "7f54bacdc3785caf"

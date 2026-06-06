@@ -1,7 +1,7 @@
 {
-  "id": "cutlass_36_gather_scatter_fusion__logic_error__7f54bacd",
+  "id": "cutlass_36_gather_scatter_fusion__timeout__7f54bacd",
   "task_family": "cutlass",
-  "error_category": "logic_error",
+  "error_category": "timeout",
   "difficulty": "medium",
   "upstream_library": "CUTLASS v3.5",
   "broken_start_provenance": "LLM-generated, anonymous frontier model",
