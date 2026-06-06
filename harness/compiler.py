@@ -125,6 +125,7 @@ def run_test(
     input_meta: dict,
     workdir: Path,
     timeout: int = 30,
+    performance_gate: dict | None = None,
 ) -> tuple[int | None, str]:
     """
     Run the compiled test. Returns (returncode, test_output).
@@ -135,7 +136,10 @@ def run_test(
     if is_applied_kernels_task(input_meta):
         return applied_kernels_test(input_meta["task_id"], task_workdir, timeout=max(timeout, 300))
 
-    test_cmd = _fix_python_cmd(input_meta["test_command"])
+    test_cmd = input_meta["test_command"]
+    if _performance_gate_enabled(performance_gate):
+        test_cmd = _enable_kernelbench_perf(test_cmd, input_meta)
+    test_cmd = _fix_python_cmd(test_cmd)
     # Inherit current Python environment
     test_env = os.environ.copy()
     python_bin = Path(sys.executable).parent
@@ -152,3 +156,22 @@ def run_test(
         return result.returncode, output.strip()
     except subprocess.TimeoutExpired:
         return -1, "[TEST TIMEOUT] Execution timed out"
+
+
+def _performance_gate_enabled(performance_gate: dict | None) -> bool:
+    return bool(performance_gate and performance_gate.get("enabled", True))
+
+
+def _enable_kernelbench_perf(test_cmd: str, input_meta: dict) -> str:
+    """Ask KernelBench eval commands to emit runtime/ref_runtime for gating.
+
+    The official KernelBench input JSONs in this repo usually set
+    measure_performance=False because correctness-only debug was the default.
+    When a YAML performance gate is enabled, the harness needs these timings
+    so classifier.py can apply the configured min_speedup.
+    """
+    if input_meta.get("solution_file") != "solution.py":
+        return test_cmd
+    if "eval_kernel_against_ref" not in test_cmd:
+        return test_cmd
+    return test_cmd.replace("measure_performance=False", "measure_performance=True")

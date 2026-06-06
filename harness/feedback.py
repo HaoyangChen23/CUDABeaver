@@ -150,7 +150,7 @@ def _feedback_l3(
     elif category == "timeout":
         return _feedback_timeout(previous_code)
     elif category == "perf_below_threshold":
-        return _feedback_perf(test_output or "", previous_code)
+        return _feedback_perf(test_output or "", previous_code, classification)
     elif category in ("functional_correctness_bug", "logic_error", "wrong_result"):
         return _feedback_wrong_result(test_output or "", previous_code)
     elif category == "environment_dependency_bug":
@@ -305,18 +305,30 @@ def _feedback_wrong_result(test_output: str, code: str) -> str:
     return "\n".join(parts)
 
 
-def _feedback_perf(test_output: str, code: str) -> str:
-    """Correctness OK but speedup < 0.5x CUTLASS reference — perf-aware feedback."""
+def _feedback_perf(test_output: str, code: str, classification: dict | None = None) -> str:
+    """Correctness OK but below the configured performance gate."""
+    gate = (classification or {}).get("performance_gate") or {}
+    threshold = gate.get("min_speedup")
     speedups = [float(m) for m in re.findall(r"Speedup:\s*([\d.]+)x", test_output or "")]
     if speedups:
         mean_sp = sum(speedups) / len(speedups)
         per_size = ", ".join(f"{s:.3f}x" for s in speedups)
         perf_summary = f"Mean speedup: {mean_sp:.3f}x  (per-size: {per_size})"
+    elif gate.get("speedup") is not None:
+        perf_summary = f"Speedup: {gate['speedup']:.3f}x"
+    elif threshold is not None:
+        perf_summary = f"Speedup below {float(threshold):.3f}x reference."
     else:
-        perf_summary = "Speedup below 0.5x CUTLASS reference."
+        perf_summary = "Speedup below the configured performance gate."
+
+    requirement = (
+        f"It must reach >= {float(threshold):.3f}x reference speedup to pass."
+        if threshold is not None
+        else "It must reach the configured reference speedup threshold to pass."
+    )
 
     return "\n".join([
-        "Your code is correct but too slow. It must reach >= 0.5x CUTLASS reference speedup to pass.",
+        f"Your code is correct but too slow. {requirement}",
         "",
         "## Performance Result",
         "```",

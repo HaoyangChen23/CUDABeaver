@@ -189,6 +189,27 @@ def sha256_prefix(code: str, length: int = 16) -> str:
     return hashlib.sha256(code.encode("utf-8")).hexdigest()[:length]
 
 
+def _performance_gate_config(config: dict) -> dict | None:
+    """Return normalized YAML performance gate config, if enabled."""
+    raw = config.get("performance_gate")
+    if raw is None:
+        raw = config.get("experiment", {}).get("performance_gate")
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise ValueError("performance_gate must be a YAML mapping")
+    if not raw.get("enabled", True):
+        return {"enabled": False}
+    min_speedup = raw.get("min_speedup", raw.get("threshold"))
+    if min_speedup is None:
+        raise ValueError("enabled performance_gate requires min_speedup")
+    return {
+        "enabled": True,
+        "min_speedup": float(min_speedup),
+        "fail_on_skipped": bool(raw.get("fail_on_skipped", False)),
+    }
+
+
 # compile_code, run_test → compiler.py
 # call_llm, extract_code → llm_client.py
 
@@ -305,6 +326,7 @@ def run_task(
     workdir = Path(config["build"]["workdir"])
     build_timeout = config["build"]["timeout"]
     test_timeout = config["build"]["test_timeout"]
+    performance_gate = _performance_gate_config(config)
 
     solution_file = input_meta.get("solution_file", "solution.cu")
 
@@ -430,12 +452,14 @@ def run_task(
         test_output = None
         if build_ok:
             test_returncode, test_output = run_test(
-                task_stem, input_meta, workdir, test_timeout
+                task_stem, input_meta, workdir, test_timeout,
+                performance_gate=performance_gate,
             )
 
         # --- Classify ---
         classification = classify_result(
-            build_ok, build_output, test_output, test_returncode
+            build_ok, build_output, test_output, test_returncode,
+            performance_gate=performance_gate,
         )
 
         # --- Save build log ---
@@ -563,6 +587,7 @@ def _make_record(
     status: str = "failed",
     logic_error_category: str | None = None,
     logic_error_detail: str | None = None,
+    performance_gate: dict | None = None,
     code_hash: str | None = None,
 ) -> dict:
     task_id = input_meta.get("task_id", task_stem.replace("_", "/", 1))
@@ -589,6 +614,8 @@ def _make_record(
         record["logic_error_category"] = logic_error_category
     if logic_error_detail:
         record["logic_error_detail"] = logic_error_detail
+    if performance_gate is not None:
+        record["performance_gate"] = performance_gate
     if status == "passed":
         record["final_solution_status"] = "PASSED"
     else:

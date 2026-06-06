@@ -61,6 +61,7 @@ def classify_result(
     build_output: str,
     test_output: str | None,
     test_returncode: int | None,
+    performance_gate: dict | None = None,
 ) -> dict:
     """
     Classify a single iteration result into one of eight categories.
@@ -75,6 +76,7 @@ def classify_result(
       - logic_error_detail: str | None
     """
     combined = (build_output or "") + "\n" + (test_output or "")
+    perf_gate = _normalize_performance_gate(performance_gate)
 
     # --- 1. Environment dependency (check both build and test output) ---
     env_match = _match_patterns(combined, ENVIRONMENT_PATTERNS)
@@ -105,23 +107,37 @@ def classify_result(
         if (not _match_patterns(test_output, ILLEGAL_MEMORY_PATTERNS)
                 and not _match_patterns(test_output, OOM_PATTERNS)
                 and not _match_patterns(test_output, TIMEOUT_PATTERNS)):
-            # applied-kernels-aware perf gate: if test_output contains "Speedup:" lines
-            # (applied-kernels ./test format), require mean_speedup >= 0.5x CUTLASS to
-            # actually count as passed. correctness alone (applied-kernels naive baseline)
-            # would otherwise pass trivially without any optimization.
+            # applied-kernels output may include "Speedup:" lines. Treat them
+            # as a gate only when YAML performance_gate is enabled.
             kh_speedups = _extract_kh_speedups(test_output)
             if kh_speedups:
                 import statistics
                 mean_sp = statistics.mean(kh_speedups)
-                if mean_sp < 0.5:
-                    return _result(
-                        category="perf_below_threshold",
-                        five_category="logic_error",
-                        error_type="perf_gate",
-                        build_ok=True,
-                        detail=f"correctness OK but mean speedup {mean_sp:.3f}x < 0.5x CUTLASS reference (per-size: {kh_speedups})",
+                if perf_gate:
+                    threshold = perf_gate["min_speedup"]
+                    gate_meta = _gate_meta(
+                        threshold, mean_sp, source="applied_kernels_stdout",
                     )
-                # passed-with-perf: include speedup numbers in detail for D-report
+                    if mean_sp < threshold:
+                        return _result(
+                            category="perf_below_threshold",
+                            five_category="logic_error",
+                            error_type="perf_gate",
+                            build_ok=True,
+                            detail=(
+                                f"correctness OK but mean speedup {mean_sp:.3f}x "
+                                f"< {threshold:.3f}x reference (per-size: {kh_speedups})"
+                            ),
+                            performance_gate=gate_meta,
+                        )
+                    return _result(
+                        category="passed",
+                        five_category="passed",
+                        build_ok=True,
+                        status="passed",
+                        detail=f"mean_speedup={mean_sp:.3f}x  per-size={kh_speedups}",
+                        performance_gate=gate_meta,
+                    )
                 return _result(
                     category="passed",
                     five_category="passed",
@@ -129,6 +145,47 @@ def classify_result(
                     status="passed",
                     detail=f"mean_speedup={mean_sp:.3f}x  per-size={kh_speedups}",
                 )
+            if perf_gate:
+                kb_speedup = _extract_kernelbench_speedup(test_output)
+                if kb_speedup is not None:
+                    gate_meta = _gate_meta(
+                        perf_gate["min_speedup"], kb_speedup,
+                        source="kernelbench_runtime",
+                    )
+                    if kb_speedup < perf_gate["min_speedup"]:
+                        return _result(
+                            category="perf_below_threshold",
+                            five_category="logic_error",
+                            error_type="perf_gate",
+                            build_ok=True,
+                            detail=(
+                                f"correctness OK but speedup {kb_speedup:.3f}x "
+                                f"< {perf_gate['min_speedup']:.3f}x reference"
+                            ),
+                            performance_gate=gate_meta,
+                        )
+                    return _result(
+                        category="passed",
+                        five_category="passed",
+                        build_ok=True,
+                        status="passed",
+                        detail=f"speedup={kb_speedup:.3f}x",
+                        performance_gate=gate_meta,
+                    )
+                if perf_gate.get("fail_on_skipped"):
+                    return _result(
+                        category="perf_unmeasured",
+                        five_category="logic_error",
+                        error_type="perf_gate_unmeasured",
+                        build_ok=True,
+                        detail="correctness OK but speedup was not measured",
+                        performance_gate={
+                            "enabled": True,
+                            "min_speedup": perf_gate["min_speedup"],
+                            "passed": False,
+                            "skipped": "speedup_not_found",
+                        },
+                    )
             return _result(
                 category="passed",
                 five_category="passed",
@@ -187,8 +244,9 @@ def _result(
     error_type: str | None = None,
     status: str = "failed",
     detail: str | None = None,
+    performance_gate: dict | None = None,
 ) -> dict:
-    return {
+    result = {
         "category": category,
         "five_category": five_category,
         "error_type": error_type,
@@ -197,6 +255,9 @@ def _result(
         "logic_error_category": category if status == "failed" else None,
         "logic_error_detail": detail,
     }
+    if performance_gate is not None:
+        result["performance_gate"] = performance_gate
+    return result
 
 
 def _extract_kh_speedups(output: str) -> list[float]:
@@ -204,6 +265,48 @@ def _extract_kh_speedups(output: str) -> list[float]:
     Returns empty list if no Speedup lines found (non-applied-kernels task).
     """
     return [float(m) for m in re.findall(r"Speedup:\s*([\d.]+)x", output or "")]
+
+
+def _extract_kernelbench_speedup(output: str) -> float | None:
+    """Extract ref/candidate speedup from KernelBench eval repr output."""
+    text = output or ""
+    runtime = _extract_named_float(text, "runtime")
+    ref_runtime = _extract_named_float(text, "ref_runtime")
+    if runtime is None or ref_runtime is None or runtime <= 0 or ref_runtime <= 0:
+        return None
+    return ref_runtime / runtime
+
+
+def _extract_named_float(text: str, name: str) -> float | None:
+    match = re.search(rf"\b{name}=(-?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)", text)
+    if not match:
+        return None
+    try:
+        return float(match.group(1))
+    except ValueError:
+        return None
+
+
+def _normalize_performance_gate(gate: dict | None) -> dict | None:
+    if not gate or not gate.get("enabled", True):
+        return None
+    min_speedup = gate.get("min_speedup", gate.get("threshold"))
+    if min_speedup is None:
+        return None
+    return {
+        "min_speedup": float(min_speedup),
+        "fail_on_skipped": bool(gate.get("fail_on_skipped", False)),
+    }
+
+
+def _gate_meta(min_speedup: float, speedup: float, source: str) -> dict:
+    return {
+        "enabled": True,
+        "min_speedup": float(min_speedup),
+        "speedup": float(speedup),
+        "passed": speedup >= min_speedup,
+        "source": source,
+    }
 
 
 def _match_patterns(output: str, patterns: list[str]) -> str | None:
