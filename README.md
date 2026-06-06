@@ -428,14 +428,6 @@ build-audit table in `docs/REPRODUCE.md`).
 
 ---
 
-## Authors
-
-Anonymous Authors (NeurIPS 2026 D&B Track submission). Will be deanonymized
-on acceptance. Until then, please address inquiries through the OpenReview
-submission page.
-
----
-
 ## License
 
 The benchmark + harness + analysis code is released under **CC BY 4.0**
