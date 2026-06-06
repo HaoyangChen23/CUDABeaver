@@ -206,44 +206,69 @@ cudaError_t CutlassGatherScatterGemmRef(
     float const *dC, int ldc, int const *d_gather_C,
     float *dD, int ldd, int const *d_scatter_D,
     int A_rows) {
+  (void)d_gather_C;
 
-  // Copy indices
-  std::vector<int> gather_A(M), gather_C(M), scatter_D(M);
-  cudaMemcpy(gather_A.data(), d_gather_A, M * sizeof(int), cudaMemcpyDeviceToHost);
-  cudaMemcpy(gather_C.data(), d_gather_C, M * sizeof(int), cudaMemcpyDeviceToHost);
-  cudaMemcpy(scatter_D.data(), d_scatter_D, M * sizeof(int), cudaMemcpyDeviceToHost);
+  using RowMajor = cutlass::layout::RowMajor;
+  using RowGatherScatterGemm = cutlass::gemm::device::GemmUniversal<
+      cutlass::half_t,
+      RowMajor,
+      cutlass::half_t,
+      RowMajor,
+      float,
+      RowMajor,
+      float,
+      MMAOp,
+      SmArch,
+      ShapeMMAThreadBlock,
+      ShapeMMAWarp,
+      ShapeMMAOp,
+      EpilogueOp,
+      SwizzleThreadBlock,
+      NumStages,
+      8,
+      8,
+      cutlass::arch::OpMultiplyAdd,
+      cutlass::ComplexTransform::kNone,
+      cutlass::ComplexTransform::kNone,
+      true,   /* GatherA */
+      false,  /* GatherB */
+      true    /* ScatterD */
+  >;
 
-  int D_rows = 0;
-  for (int i = 0; i < M; ++i) D_rows = std::max(D_rows, scatter_D[i] + 1);
-  int C_rows = 0;
-  for (int i = 0; i < M; ++i) C_rows = std::max(C_rows, gather_C[i] + 1);
+  cutlass::gemm::GemmCoord problem_size(M, N, K);
+  typename RowGatherScatterGemm::Arguments arguments{
+      cutlass::gemm::GemmUniversalMode::kGemm,
+      problem_size,
+      1,
+      {alpha, beta},
+      reinterpret_cast<cutlass::half_t const *>(dA),
+      reinterpret_cast<cutlass::half_t const *>(dB),
+      dC,
+      dD,
+      static_cast<int64_t>(A_rows) * K,
+      static_cast<int64_t>(K) * N,
+      static_cast<int64_t>(M) * N,
+      static_cast<int64_t>(M) * N,
+      lda,
+      ldb,
+      ldc,
+      ldd,
+      d_gather_A,
+      nullptr,
+      d_scatter_D};
 
-  int count_A = A_rows * K, count_B = K * N;
-  int count_C = C_rows * N, count_D = D_rows * N;
+  RowGatherScatterGemm gemm_op;
+  cutlass::Status status = gemm_op.can_implement(arguments);
+  if (status != cutlass::Status::kSuccess) return cudaErrorInvalidValue;
 
-  // Copy half data
-  std::vector<__half> hA(count_A), hB(count_B);
-  cudaMemcpy(hA.data(), dA, count_A * sizeof(__half), cudaMemcpyDeviceToHost);
-  cudaMemcpy(hB.data(), dB, count_B * sizeof(__half), cudaMemcpyDeviceToHost);
+  size_t workspace_size = RowGatherScatterGemm::get_workspace_size(arguments);
+  cutlass::device_memory::allocation<uint8_t> workspace(workspace_size);
+  status = gemm_op.initialize(arguments, workspace.get());
+  if (status != cutlass::Status::kSuccess) return cudaErrorUnknown;
 
-  // Convert half to float
-  std::vector<float> fA(count_A), fB(count_B);
-  for (int i = 0; i < count_A; ++i) fA[i] = __half2float(hA[i]);
-  for (int i = 0; i < count_B; ++i) fB[i] = __half2float(hB[i]);
-
-  // Copy C (float)
-  std::vector<float> fC(count_C, 0);
-  cudaMemcpy(fC.data(), dC, count_C * sizeof(float), cudaMemcpyDeviceToHost);
-
-  // Compute
-  std::vector<float> fD(count_D, 0);
-  CutlassGatherScatterGemmHost(M, N, K, alpha, fA, lda, gather_A, fB, ldb,
-    beta, fC, ldc, gather_C, fD, ldd, scatter_D);
-
-  // Copy result back
-  cudaMemcpy(dD, fD.data(), count_D * sizeof(float), cudaMemcpyHostToDevice);
-
-  return cudaSuccess;
+  status = gemm_op();
+  if (status != cutlass::Status::kSuccess) return cudaErrorUnknown;
+  return cudaGetLastError();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
