@@ -36,6 +36,26 @@ def _fix_python_cmd(cmd: str) -> str:
     return re.sub(r'\bpython\b(?!3)', sys.executable, cmd)
 
 
+def _python_subprocess_env() -> dict:
+    """Environment for task build/test commands run outside the harness package."""
+    env = os.environ.copy()
+
+    # Ensure `python` resolves to the interpreter that launched the harness.
+    python_bin = Path(sys.executable).parent
+    env["PATH"] = str(python_bin) + os.pathsep + env.get("PATH", "")
+
+    # KernelBench is vendored in this repository. Build/test commands run from
+    # each task workdir, so they cannot import it unless the vendor dir is on
+    # PYTHONPATH.
+    vendor_dir = Path(__file__).resolve().parent / "_vendor"
+    pythonpath = env.get("PYTHONPATH")
+    entries = [str(vendor_dir)]
+    if pythonpath:
+        entries.append(pythonpath)
+    env["PYTHONPATH"] = os.pathsep.join(entries)
+    return env
+
+
 def compile_code(
     solution_code: str,
     task_stem: str,
@@ -99,10 +119,7 @@ def compile_code(
 
     # Default path — input.json build_command + nvcc
     build_cmd = _fix_python_cmd(input_meta["build_command"])
-    build_env = os.environ.copy()
-    # Ensure the current Python's bin dir is first in PATH
-    python_bin = Path(sys.executable).parent
-    build_env["PATH"] = str(python_bin) + os.pathsep + build_env.get("PATH", "")
+    build_env = _python_subprocess_env()
     try:
         result = run_pg(
             build_cmd,
@@ -140,10 +157,7 @@ def run_test(
     if _performance_gate_enabled(performance_gate):
         test_cmd = _enable_kernelbench_perf(test_cmd, input_meta)
     test_cmd = _fix_python_cmd(test_cmd)
-    # Inherit current Python environment
-    test_env = os.environ.copy()
-    python_bin = Path(sys.executable).parent
-    test_env["PATH"] = str(python_bin) + os.pathsep + test_env.get("PATH", "")
+    test_env = _python_subprocess_env()
     try:
         result = run_pg(
             test_cmd,
