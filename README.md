@@ -420,14 +420,6 @@ build-audit table in `docs/REPRODUCE.md`).
 
 ---
 
-## What's NOT in the package
-
-- Paper-side `outputs/` directories (reviewer-side, regenerated per run)
-- API keys / `.env` / scratch caches
-- Profiler dumps (`*.nsys-rep`, `*.ncu-rep`)
-
----
-
 ## License
 
 The benchmark + harness + analysis code is released under **CC BY 4.0**
