@@ -1,11 +1,12 @@
 {
   "version": "1.0.0",
-  "n_instances": 212,
+  "n_instances": 228,
   "license": "CC BY 4.0",
   "schema_version": "neurips2026_v1",
   "task_families": {
     "cublas": 3,
-    "cuda": 48,
+    "cuda": 60,
+    "cudabench": 5,
     "cufft": 2,
     "cufft_samples": 9,
     "cusolver": 10,
@@ -18,8 +19,8 @@
   },
   "error_category_distribution": {
     "compile_error": 105,
-    "logic_error": 43,
-    "memory_crash": 18,
+    "logic_error": 45,
+    "memory_crash": 32,
     "perf_broken": 41,
     "timeout": 5
   },
@@ -106,6 +107,24 @@
       "broken_start_hash": "778ab761b89af891"
     },
     {
+      "id": "cuda_117__memory_crash__c2f7ebb0",
+      "path": "data/cuda_117__memory_crash__c2f7ebb0/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 60,
+      "broken_start_hash": "c2f7ebb0a08086c3"
+    },
+    {
+      "id": "cuda_122__memory_crash__5ace5f9e",
+      "path": "data/cuda_122__memory_crash__5ace5f9e/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 117,
+      "broken_start_hash": "5ace5f9ec8f8b22f"
+    },
+    {
       "id": "cuda_123__logic_error__12ba71c9",
       "path": "data/cuda_123__logic_error__12ba71c9/",
       "task_family": "cuda",
@@ -142,6 +161,15 @@
       "broken_start_hash": "df17e5f1b971138f"
     },
     {
+      "id": "cuda_137__memory_crash__9b14b4ef",
+      "path": "data/cuda_137__memory_crash__9b14b4ef/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 80,
+      "broken_start_hash": "9b14b4ef367bde3f"
+    },
+    {
       "id": "cuda_142__compile_error__9f5657ee",
       "path": "data/cuda_142__compile_error__9f5657ee/",
       "task_family": "cuda",
@@ -151,6 +179,15 @@
       "broken_start_hash": "9f5657ee47f2f602"
     },
     {
+      "id": "cuda_142__memory_crash__b966ccab",
+      "path": "data/cuda_142__memory_crash__b966ccab/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 66,
+      "broken_start_hash": "b966ccab6d17da45"
+    },
+    {
       "id": "cuda_144__compile_error__dfbeabd6",
       "path": "data/cuda_144__compile_error__dfbeabd6/",
       "task_family": "cuda",
@@ -158,6 +195,15 @@
       "difficulty": "hard",
       "broken_start_lines": 111,
       "broken_start_hash": "dfbeabd6bed8694f"
+    },
+    {
+      "id": "cuda_144__memory_crash__2d380ecb",
+      "path": "data/cuda_144__memory_crash__2d380ecb/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 91,
+      "broken_start_hash": "2d380ecb8e64ccb9"
     },
     {
       "id": "cuda_151__memory_crash__a57bbb74",
@@ -241,6 +287,15 @@
       "broken_start_hash": "81485d75bc7169b4"
     },
     {
+      "id": "cuda_173__memory_crash__7bbd5a96",
+      "path": "data/cuda_173__memory_crash__7bbd5a96/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 43,
+      "broken_start_hash": "7bbd5a96d2204ffc"
+    },
+    {
       "id": "cuda_177__compile_error__192ea167",
       "path": "data/cuda_177__compile_error__192ea167/",
       "task_family": "cuda",
@@ -257,6 +312,15 @@
       "difficulty": "medium",
       "broken_start_lines": 33,
       "broken_start_hash": "02f4993ce37d4f64"
+    },
+    {
+      "id": "cuda_17__memory_crash__ea1a11f7",
+      "path": "data/cuda_17__memory_crash__ea1a11f7/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 33,
+      "broken_start_hash": "ea1a11f7ebf8b42d"
     },
     {
       "id": "cuda_180__compile_error__76f2d111",
@@ -331,6 +395,15 @@
       "broken_start_hash": "4f12b566655df492"
     },
     {
+      "id": "cuda_1__memory_crash__4c324055",
+      "path": "data/cuda_1__memory_crash__4c324055/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 25,
+      "broken_start_hash": "4c324055def682ae"
+    },
+    {
       "id": "cuda_202__compile_error__2e7ebe8a",
       "path": "data/cuda_202__compile_error__2e7ebe8a/",
       "task_family": "cuda",
@@ -358,6 +431,15 @@
       "broken_start_hash": "f8c0ac7a6ac146ad"
     },
     {
+      "id": "cuda_20__memory_crash__f1025423",
+      "path": "data/cuda_20__memory_crash__f1025423/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 35,
+      "broken_start_hash": "f1025423a2b13e95"
+    },
+    {
       "id": "cuda_215__compile_error__4bbffc47",
       "path": "data/cuda_215__compile_error__4bbffc47/",
       "task_family": "cuda",
@@ -374,6 +456,15 @@
       "difficulty": "medium",
       "broken_start_lines": 37,
       "broken_start_hash": "dfb98af7e098c66c"
+    },
+    {
+      "id": "cuda_21__memory_crash__a550b786",
+      "path": "data/cuda_21__memory_crash__a550b786/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 116,
+      "broken_start_hash": "a550b78609ad1e66"
     },
     {
       "id": "cuda_225__compile_error__ff82afee",
@@ -403,6 +494,15 @@
       "broken_start_hash": "d12728ed92aa5f9f"
     },
     {
+      "id": "cuda_227__memory_crash__96f90a9e",
+      "path": "data/cuda_227__memory_crash__96f90a9e/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 156,
+      "broken_start_hash": "96f90a9e648cdda6"
+    },
+    {
       "id": "cuda_22__compile_error__4d18e637",
       "path": "data/cuda_22__compile_error__4d18e637/",
       "task_family": "cuda",
@@ -428,6 +528,15 @@
       "difficulty": "medium",
       "broken_start_lines": 47,
       "broken_start_hash": "c2d70bfc89940f20"
+    },
+    {
+      "id": "cuda_3__memory_crash__60acd230",
+      "path": "data/cuda_3__memory_crash__60acd230/",
+      "task_family": "cuda",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 25,
+      "broken_start_hash": "60acd2304cd722f7"
     },
     {
       "id": "cuda_55__compile_error__37d07697",
@@ -482,6 +591,51 @@
       "difficulty": "medium",
       "broken_start_lines": 110,
       "broken_start_hash": "93ac06fc3aeeb35d"
+    },
+    {
+      "id": "cudabench_117__memory_crash__5b254c25",
+      "path": "data/cudabench_117__memory_crash__5b254c25/",
+      "task_family": "cudabench",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 126,
+      "broken_start_hash": "5b254c25b5e3dac2"
+    },
+    {
+      "id": "cudabench_119__memory_crash__57103eb9",
+      "path": "data/cudabench_119__memory_crash__57103eb9/",
+      "task_family": "cudabench",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 126,
+      "broken_start_hash": "57103eb9b2f57c6c"
+    },
+    {
+      "id": "cudabench_274__memory_crash__a08642f9",
+      "path": "data/cudabench_274__memory_crash__a08642f9/",
+      "task_family": "cudabench",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 117,
+      "broken_start_hash": "a08642f91cb68a34"
+    },
+    {
+      "id": "cudabench_284__memory_crash__63670b6d",
+      "path": "data/cudabench_284__memory_crash__63670b6d/",
+      "task_family": "cudabench",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 129,
+      "broken_start_hash": "63670b6dcae79150"
+    },
+    {
+      "id": "cudabench_72__memory_crash__32cc9e41",
+      "path": "data/cudabench_72__memory_crash__32cc9e41/",
+      "task_family": "cudabench",
+      "error_category": "memory_crash",
+      "difficulty": "medium",
+      "broken_start_lines": 118,
+      "broken_start_hash": "32cc9e410a2e73ca"
     },
     {
       "id": "cufft_1__compile_error__611168ad",
@@ -1366,10 +1520,10 @@
       "broken_start_hash": "5227765675deeb76"
     },
     {
-      "id": "kernelbench_level1_92__memory_crash__ad1587f9",
-      "path": "data/kernelbench_level1_92__memory_crash__ad1587f9/",
+      "id": "kernelbench_level1_92__logic_error__ad1587f9",
+      "path": "data/kernelbench_level1_92__logic_error__ad1587f9/",
       "task_family": "kernelbench",
-      "error_category": "memory_crash",
+      "error_category": "logic_error",
       "difficulty": "medium",
       "broken_start_lines": 480,
       "broken_start_hash": "ad1587f924f128e2"
@@ -1519,15 +1673,6 @@
       "broken_start_hash": "d63b694a178c83a5"
     },
     {
-      "id": "kernelbench_level2_33__memory_crash__a976ca05",
-      "path": "data/kernelbench_level2_33__memory_crash__a976ca05/",
-      "task_family": "kernelbench",
-      "error_category": "memory_crash",
-      "difficulty": "medium",
-      "broken_start_lines": 115,
-      "broken_start_hash": "a976ca05b3dcf3d6"
-    },
-    {
       "id": "kernelbench_level2_34__compile_error__1331a85f",
       "path": "data/kernelbench_level2_34__compile_error__1331a85f/",
       "task_family": "kernelbench",
@@ -1555,10 +1700,10 @@
       "broken_start_hash": "dd4f6cf775fc6852"
     },
     {
-      "id": "kernelbench_level2_3__memory_crash__dbf34be4",
-      "path": "data/kernelbench_level2_3__memory_crash__dbf34be4/",
+      "id": "kernelbench_level2_3__logic_error__dbf34be4",
+      "path": "data/kernelbench_level2_3__logic_error__dbf34be4/",
       "task_family": "kernelbench",
-      "error_category": "memory_crash",
+      "error_category": "logic_error",
       "difficulty": "medium",
       "broken_start_lines": 223,
       "broken_start_hash": "dbf34be4e6fc68d5"
