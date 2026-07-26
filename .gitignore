@@ -30,3 +30,11 @@ harness/.cache/
 /data/testbench/
 /data/references/
 data/*/testbench/reference_sources/
+
+# Experiment results and run artifacts NEVER ship in this repo — they live in
+# the authors' working repository only.
+outputs/
+logs/
+results*/
+*.log
+nohup.out

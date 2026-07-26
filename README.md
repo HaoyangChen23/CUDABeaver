@@ -4,12 +4,12 @@
   <img src="assets/repair.png" alt="CUDABeaver: LLM-driven CUDA kernel repair pipeline" width="100%">
 </p>
 
-A benchmark of **212 broken CUDA kernels** paired with reference
+A benchmark of **228 broken CUDA kernels** paired with reference
 implementations and runnable testbenches, designed to evaluate large
 language model (LLM) debugging capability on GPU kernel code.
 
 This single repository ships **everything** end-to-end:
-- the 212-instance dataset under `data/` (broken_start + reference + testbench + per-instance metadata),
+- the 228-instance dataset under `data/` (broken_start + reference + testbench + per-instance metadata),
 - the evaluation harness (`harness/`) that drives the gen → build → test → score loop,
 - the analysis pipeline (`analysis/`) that produces every paper table,
 - 238 evaluation configs (`configs/`) covering 5 axes (iter / repeated / feedback / history / fewshot),
@@ -53,8 +53,13 @@ bash scripts/prepare_benchmark.sh
 pytest tests/test_smoke.py -v
 ```
 
-Then point a cfg's `llm:` block at your cloud-API or vLLM endpoint and run
-`python -m harness.run_experiment --config configs/iter/<model>.yaml --mode debug`
+Then point a cfg's `api:` block at your cloud-API or vLLM endpoint and run
+
+```bash
+python -m harness.run_experiment --config configs/iter/<model>.yaml \
+    --mode debug --v2-task-list benchmark/task_list.json
+```
+
 (see [Reproducing paper tables](#reproducing-paper-tables)).
 
 ---
@@ -85,6 +90,7 @@ analysis/                  result aggregation
   build_master.py            CLI: produces master.csv across all runs
   pivot_tables.py            CLI: paper tables + per-model summary + summary.md
   render_latex.py            booktabs LaTeX renderer
+  p_sweep.py                 CLI: offline gate re-scoring at 9 thresholds
 
 configs/                   238 evaluation configs across 5 axes
   iter/                      single-shot debug
@@ -96,17 +102,22 @@ configs/                   238 evaluation configs across 5 axes
 scripts/                   one-time setup + utilities
   prepare_benchmark.sh       materialize flat dataset layout (one-time, idempotent)
   post_conda_setup.sh        register vendored kernelbench in conda env (one-time)
+  migrate_full_id_keying.py  documented migration to full-instance-id keying
 
-data/                      dataset (212 instances)
+data/                      dataset (228 instances)
   <instance_id>/             per-instance broken_start + reference + testbench + metadata
   _external/                 bundled CUTLASS (BSD-3) + ThunderKittens (MIT) headers
 
-benchmark/                 legacy task-list manifest (used by --mode debug)
-docs/                      PROTOCOL, PERF_PROTOCOL, REPRODUCE, ANONYMIZATION
-tests/                     smoke + unit tests (no LLM key required)
-examples/                  reproduction examples (see docs/REPRODUCE.md)
+benchmark/                 canonical task list + timing baselines
+  task_list.json             228 full-instance-id entries (used by --mode debug)
+  references/                168 per-instance reference timing specs
+  references_cache/          measured baselines: Blackwell sm_120 + H200 sm_90
+docs/                      PROTOCOL, PERF_PROTOCOL, REPRODUCE, ANONYMIZATION,
+                           DATA_SCHEMA (family semantics), CURATION (funnel)
+tests/                     smoke + per-family install fixtures (no LLM key)
+examples/                  pointers to reproduction walk-throughs (docs/REPRODUCE.md)
 
-manifest.json              top-level index over the 212 instances
+manifest.json              top-level index over the 228 instances
 croissant.json             Croissant 1.0 metadata + 22 RAI fields (RAI 1.0)
 README.md                  this file
 LICENSE                    CC BY 4.0
@@ -118,7 +129,7 @@ LICENSE                    CC BY 4.0
 
 ### Dataset summary
 
-The benchmark consists of 212 instances across 11 task families spanning the
+The benchmark consists of 228 instances across 12 task families spanning the
 breadth of GPU programming workloads — from low-level cuBLAS / cuFFT /
 cuSOLVER / cuSPARSE library calls to high-performance attention kernels
 (FlashAttention, ThunderKittens) and CUTLASS GEMM tile schedules. Each
@@ -185,7 +196,7 @@ Top-level files:
 
 ```
 data/_external/        Bundled CUTLASS + ThunderKittens headers (BSD-3 / MIT)
-manifest.json          Index over all 212 instances (compact entry per instance)
+manifest.json          Index over all 228 instances (compact entry per instance)
 croissant.json         Croissant 1.0 metadata + 22 RAI fields (RAI 1.0)
 LICENSE                CC BY 4.0
 ```
@@ -197,7 +208,7 @@ LICENSE                CC BY 4.0
 | Field | Type | Description |
 |---|---|---|
 | `id` | string | Globally unique instance ID (`<family_n>__<category>__<hash8>`) |
-| `task_family` | string | One of 11 families (cuda, cutlass, cublas, …) |
+| `task_family` | string | One of 12 families (cuda, cudabench, cutlass, cublas, …) |
 | `error_category` | string | One of 5 (compile_error, logic_error, memory_crash, perf_broken, timeout) |
 | `difficulty` | string | "easy", "medium", or "hard" |
 | `upstream_library` | string | Source of the reference implementation (e.g. "NVIDIA cuBLAS", "ThunderKittens") |
@@ -212,16 +223,17 @@ architecture-specific requirements.
 
 #### Data splits
 
-The dataset is released as a **single split** (212 instances). The companion
+The dataset is released as a **single split** (228 instances). The companion
 paper evaluates each instance under multiple cfgs (iter, repeated, feedback
 L0–L4, history H1–H4, fewshot K1–K5); these are evaluation axes, not
-splits — every cfg sees the same 212 instances.
+splits — every cfg sees the same 228 instances.
 
 #### Composition
 
 | Task family | n | Description |
 |---|---|---|
-| `cuda` | 48 | Curated standalone nvcc + thrust kernels |
+| `cuda` | 60 | Curated standalone nvcc + thrust kernels |
+| `cudabench` | 5 | CUDABench-derived matrix workloads (sanitizer + output-comparison oracle) |
 | `cublas` | 3 | NVIDIA cuBLAS reference workloads |
 | `cufft` | 2 | NVIDIA cuFFT reference workloads |
 | `cufft_samples` | 9 | NVIDIA cuFFT sample C2C / R2C kernels |
@@ -230,11 +242,11 @@ splits — every cfg sees the same 212 instances.
 | `cutlass` | 20 | CUTLASS GEMM / Conv / fusion examples |
 | `flashattention` | 10 | FlashAttention-2 forward / backward / split kernels |
 | `layernorm` | 16 | Forward / backward LayerNorm + parallel variants |
-| `kernelbench` | 84 | KernelBench level-1 + level-2 PyTorch-extension kernels |
+| `kernelbench` | 83 | KernelBench level-1 + level-2 PyTorch-extension kernels |
 | `thunderkittens` | 4 | ThunderKittens linear-attn / mamba2 / based / flux kernels |
 
-Error category distribution: `compile_error` 105, `logic_error` 43,
-`perf_broken` 41, `memory_crash` 18, `timeout` 5.
+Error category distribution: `compile_error` 105, `logic_error` 45,
+`perf_broken` 41, `memory_crash` 32, `timeout` 5.
 
 ### Dataset creation
 
@@ -243,7 +255,7 @@ Error category distribution: `compile_error` 105, `logic_error` 43,
 LLMs are increasingly deployed for low-level GPU programming, but standard
 code-evaluation benchmarks measure code generation from scratch — not the
 practical setting where a developer asks an LLM to fix existing broken code.
-This benchmark fills that gap by providing 212 *real* failure modes
+This benchmark fills that gap by providing 228 *real* failure modes
 (generated by frontier LLMs themselves on GPU kernel tasks) paired with
 ground-truth references and runnable testbenches.
 
@@ -294,9 +306,13 @@ bash scripts/prepare_benchmark.sh
 
 ### System prerequisites
 
-- CUDA toolkit (`nvcc` ≥ 12.0; CUDA 13 is supported — see
-  `docs/REPRODUCE.md` for the thrust-path note)
-- A CUDA-capable GPU (SM ≥ 80)
+- CUDA toolkit **`nvcc` ≥ 12.8** (cusolver tasks use `cusolverDnXgeev`,
+  several testbenches include `<nvtx3/nvtx3.hpp>`; CUDA 12.9/13.x tested).
+  Export both `PATH` and `CUDA_HOME` — `setup_env.sh` checks this.
+- A CUDA-capable GPU (SM ≥ 80; corpus validated on Blackwell sm_120 and
+  Hopper sm_90 — task commands auto-adapt to the executing GPU, see
+  `docs/DATA_SCHEMA.md` § Architecture adaptation)
+- A torch wheel matching your **driver's** CUDA version (see requirements.txt)
 - Python 3.10–3.12 (3.11 is the tested target)
 
 ---
@@ -304,11 +320,20 @@ bash scripts/prepare_benchmark.sh
 ## Smoke test
 
 ```bash
-pytest tests/test_smoke.py -v
+pytest tests/test_smoke.py -v                 # <1 s: imports + classifier
+pytest tests/test_family_fixtures.py -v      # ~15-30 min: builds + passes one
+                                             # task per family on your GPU
 ```
 
-No LLM key required. Validates harness imports + classifier + bundled
-fixture instance. Should complete in under 1 s.
+No LLM key required for either. The family-fixture suite is the full
+install check: green means nvcc, torch+ninja JIT, the vendored kernelbench,
+and the applied-kernels make flow all work on this machine. Preflight any
+experiment config without spending tokens via:
+
+```bash
+python -m harness.run_experiment -c configs/iter/<model>.yaml \
+    --mode debug --v2-task-list benchmark/task_list.json --dry-run
+```
 
 ---
 
@@ -333,7 +358,7 @@ python -m analysis.pivot_tables  --in-dir analysis_out --out-dir analysis_out
 
 ### LLM endpoints — required swap
 
-Each cfg's `llm:` block ships with placeholder `<CLOUD_API_BASE_URL>` +
+Each cfg's `api:` block ships with placeholder `<CLOUD_API_BASE_URL>` +
 `CLOUD_API_KEY`. Reviewers must point these at their own infrastructure
 (any OpenAI-compatible cloud API or a self-hosted vLLM server). See
 `docs/REPRODUCE.md § LLM endpoints` for details.
@@ -353,7 +378,7 @@ All required code/headers are bundled — most instances build with just
 | kernelbench                             | 84 | `harness/_vendor/kernelbench/` (registered via .pth)|
 | flashattention, layernorm, cufft_samples| 35 | `harness/applied_kernels_runner/` + reference_sources |
 
-**Total: 212 instances**, 100% buildable on CUDA 12 or 13 (see the
+**Total: 228 instances**, 100% buildable on CUDA 12 or 13 (see the
 build-audit table in `docs/REPRODUCE.md`).
 
 ---
