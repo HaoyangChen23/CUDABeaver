@@ -1,5 +1,5 @@
 {
-  "task_id": "cuda_173",
+  "task_id": "cuda_173__memory_crash__7bbd5a96",
   "schema_version": 2,
   "difficulty": "medium",
   "level": "compute_eval_2026_1",
@@ -18,5 +18,6 @@
   },
   "build_command": "nvcc -I include -o test.out solution.cu src/im2col_kernel.cu test/test_main.cu -gencode arch=compute_80,code=[sm_80,compute_80]",
   "test_command": "python test/run_sanitizer.py ./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cuda_173"
 }

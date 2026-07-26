@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_16_ampere_tensorop_conv2dfprop",
+  "task_id": "cutlass_16_ampere_tensorop_conv2dfprop__compile_error__d43abdc7",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -17,5 +17,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_16_ampere_tensorop_conv2dfprop"
 }

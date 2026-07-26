@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_36_gather_scatter_fusion",
+  "task_id": "cutlass_36_gather_scatter_fusion__timeout__7f54bacd",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -21,5 +21,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_36_gather_scatter_fusion"
 }

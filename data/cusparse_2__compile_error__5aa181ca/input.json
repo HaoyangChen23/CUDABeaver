@@ -1,5 +1,5 @@
 {
-  "task_id": "cusparse_2",
+  "task_id": "cusparse_2__compile_error__5aa181ca",
   "schema_version": 2,
   "difficulty": "medium",
   "level": "curated_cuda_pool",
@@ -10,5 +10,6 @@
   ],
   "build_command": "nvcc -I include -o test.out solution.cu test/*.cu -arch=native -lcusparse",
   "test_command": "./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cusparse_2"
 }

@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_00_basic_gemm",
+  "task_id": "cutlass_00_basic_gemm__perf_broken__b536032b",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -17,5 +17,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_00_basic_gemm"
 }

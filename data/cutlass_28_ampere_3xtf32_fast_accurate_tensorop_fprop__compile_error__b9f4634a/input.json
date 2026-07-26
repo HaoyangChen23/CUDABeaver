@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_28_ampere_3xtf32_fast_accurate_tensorop_fprop",
+  "task_id": "cutlass_28_ampere_3xtf32_fast_accurate_tensorop_fprop__compile_error__b9f4634a",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -15,5 +15,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_28_ampere_3xtf32_fast_accurate_tensorop_fprop"
 }

@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_29_ampere_3xtf32_fast_accurate_tensorop_complex_gemm",
+  "task_id": "cutlass_29_ampere_3xtf32_fast_accurate_tensorop_complex_gemm__logic_error__dac79325",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -17,5 +17,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_29_ampere_3xtf32_fast_accurate_tensorop_complex_gemm"
 }

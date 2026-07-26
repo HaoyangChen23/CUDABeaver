@@ -1,5 +1,5 @@
 {
-  "task_id": "thunderkittens_flux_flux_gate",
+  "task_id": "thunderkittens_flux_flux_gate__compile_error__b63589a7",
   "schema_version": 2,
   "difficulty": null,
   "level": "thunderkittens",
@@ -10,5 +10,6 @@
   "build_command": "cd kernels/flux && make GPU=RTX5070 clean && make GPU=RTX5070",
   "test_command": "cd kernels/flux && make GPU=RTX5070 run",
   "solution_file": "kernels/flux/flux_gate.cu",
-  "has_thunderkittens": true
+  "has_thunderkittens": true,
+  "task_id_base": "thunderkittens_flux_flux_gate"
 }

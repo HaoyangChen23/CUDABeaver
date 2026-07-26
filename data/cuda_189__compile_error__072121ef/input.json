@@ -1,5 +1,5 @@
 {
-  "task_id": "cuda_189",
+  "task_id": "cuda_189__compile_error__072121ef",
   "schema_version": 2,
   "difficulty": "hard",
   "level": "curated_cuda_pool",
@@ -13,5 +13,6 @@
   ],
   "build_command": "nvcc -I include -o test.out solution.cu test/*.cu -arch=native -ldl",
   "test_command": "./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cuda_189"
 }

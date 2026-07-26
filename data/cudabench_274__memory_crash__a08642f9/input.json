@@ -1,5 +1,5 @@
 {
-  "task_id": "cudabench_274",
+  "task_id": "cudabench_274__memory_crash__a08642f9",
   "schema_version": 2,
   "difficulty": "medium",
   "level": "cudabench_level3",
@@ -17,5 +17,6 @@
   },
   "build_command": "nvcc -o test.out solution.cu -arch=native",
   "test_command": "mkdir -p data && python test/generate_data.py && python test/run_sanitizer.py ./test.out && python test/compare_output.py",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cudabench_274"
 }

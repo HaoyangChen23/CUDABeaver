@@ -1,5 +1,5 @@
 {
-  "task_id": "layernorm_bwd_4096",
+  "task_id": "layernorm_bwd_4096__perf_broken__3f7aa117",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "applied_kernels_class",
@@ -18,5 +18,6 @@
   },
   "solution_file": "solution.cu",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "layernorm_bwd_4096"
 }

@@ -1,5 +1,5 @@
 {
-  "task_id": "flashattention_bwd_hdim64_fp16",
+  "task_id": "flashattention_bwd_hdim64_fp16__perf_broken__56470d42",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "applied_kernels_class",
@@ -19,5 +19,6 @@
   },
   "solution_file": "solution.cu",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "flashattention_bwd_hdim64_fp16"
 }

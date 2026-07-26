@@ -1,5 +1,5 @@
 {
-  "task_id": "cuda_21",
+  "task_id": "cuda_21__memory_crash__a550b786",
   "schema_version": 2,
   "difficulty": "medium",
   "level": "compute_eval_2026_1",
@@ -18,5 +18,6 @@
   },
   "build_command": "nvcc -I include -o test.out solution.cu test/*.cu",
   "test_command": "python test/run_sanitizer.py ./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cuda_21"
 }

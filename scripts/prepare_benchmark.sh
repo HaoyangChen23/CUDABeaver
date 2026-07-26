@@ -46,7 +46,9 @@ for inst in "$DATA_DIR"/*/; do
   case "$inst_id" in
     _external|input|prompts|testbench|references) continue ;;
   esac
-  stem="${inst_id%%__*}"
+  # Full-instance-id keying: 18 base stems have TWO instances in the corpus;
+  # stem-keyed links silently overwrote each other (unreachable instances).
+  stem="$inst_id"
 
   ln -sf "../$inst_id/input.json" "$INPUT_DIR/$stem.json"
 
@@ -65,16 +67,17 @@ for inst in "$DATA_DIR"/*/; do
   done
 
   # External library headers (CUTLASS / ThunderKittens) for Class 1 Makefile-
-  # driven testbenches. Use absolute symlink targets so testbench can be
-  # copied to a workdir at any depth without the relative target breaking.
+  # driven testbenches. RELATIVE targets: the harness copies testbench into a
+  # workdir with a dereferencing copy (shutil.copytree follows links), so the
+  # link only needs to resolve at its source location — and absolute targets
+  # break the moment the repo moves to another path or machine.
   if [ -d "$DATA_DIR/_external" ] && [ -d "$inst/testbench" ]; then
     mkdir -p "$inst/testbench/reference_sources"
     for ext_lib in cutlass ThunderKittens; do
-      target="$DATA_DIR/_external/$ext_lib"
       link="$inst/testbench/reference_sources/$ext_lib"
-      if [ -d "$target" ]; then
+      if [ -d "$DATA_DIR/_external/$ext_lib" ]; then
         rm -f "$link"
-        ln -s "$target" "$link"
+        ln -s "../../../_external/$ext_lib" "$link"
       fi
     done
   fi

@@ -1,5 +1,5 @@
 {
-  "task_id": "cuda_26",
+  "task_id": "cuda_26__compile_error__c2d70bfc",
   "schema_version": 2,
   "difficulty": "medium",
   "level": "curated_cuda_pool",
@@ -11,5 +11,6 @@
   ],
   "build_command": "nvcc -I include -rdc=true -o test.out solution.cu src/kernel_wrapper.cu test/*.cu -arch=native -ldl",
   "test_command": "./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cuda_26"
 }

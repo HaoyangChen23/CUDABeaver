@@ -1,5 +1,5 @@
 {
-  "task_id": "layernorm_fwd_256",
+  "task_id": "layernorm_fwd_256__perf_broken__9b974d1c",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "applied_kernels_class",
@@ -18,5 +18,6 @@
   },
   "solution_file": "solution.cu",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "layernorm_fwd_256"
 }

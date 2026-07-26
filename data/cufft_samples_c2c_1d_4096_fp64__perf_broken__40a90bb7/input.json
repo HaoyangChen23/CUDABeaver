@@ -1,5 +1,5 @@
 {
-  "task_id": "cufft_samples_c2c_1d_4096_fp64",
+  "task_id": "cufft_samples_c2c_1d_4096_fp64__perf_broken__40a90bb7",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "applied_kernels_class",
@@ -20,5 +20,6 @@
   },
   "solution_file": "solution.cu",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cufft_samples_c2c_1d_4096_fp64"
 }

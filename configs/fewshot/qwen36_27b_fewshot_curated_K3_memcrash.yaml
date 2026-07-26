@@ -33,22 +33,34 @@ experiment:
   dataset_dir: "data"
   output_dir: "outputs/fewshot/qwen36_27b_fewshot_curated_K3_memcrash"
   tasks:
-  - "cuda_123"
-  - "cuda_151"
-  - kernelbench_level1_26
-  - kernelbench_level1_36
-  - kernelbench_level1_37
-  - kernelbench_level1_45
-  - kernelbench_level1_48
-  - kernelbench_level1_59
-  - kernelbench_level1_60
-  - kernelbench_level1_71
-  - kernelbench_level1_81
-  - kernelbench_level1_86
-  - kernelbench_level1_92
-  - kernelbench_level2_12
-  - kernelbench_level2_3
-  - kernelbench_level2_33
+  - "cuda_123__logic_error__12ba71c9"
+  - "cuda_123__memory_crash__f84dbbd3"
+  - "cuda_151__memory_crash__a57bbb74"
+  - "cuda_151__memory_crash__f4f8eece"
+  - "kernelbench_level1_26__memory_crash__a3df0ba5"
+  - "kernelbench_level1_26__timeout__313236a1"
+  - "kernelbench_level1_36__logic_error__1edf54b6"
+  - "kernelbench_level1_36__memory_crash__5ab71227"
+  - "kernelbench_level1_37__memory_crash__871c84b9"
+  - "kernelbench_level1_37__timeout__dcdcf7db"
+  - "kernelbench_level1_45__memory_crash__3d4a5a19"
+  - "kernelbench_level1_45__memory_crash__c4c9fe23"
+  - "kernelbench_level1_48__memory_crash__f81c5f43"
+  - "kernelbench_level1_59__memory_crash__1507e516"
+  - "kernelbench_level1_60__memory_crash__2d1e4c78"
+  - "kernelbench_level1_71__logic_error__7fdfb9e7"
+  - "kernelbench_level1_71__memory_crash__aa1549cb"
+  - "kernelbench_level1_81__logic_error__ca636d37"
+  - "kernelbench_level1_81__memory_crash__9de12822"
+  - "kernelbench_level1_86__compile_error__ebe87ed6"
+  - "kernelbench_level1_86__memory_crash__e8fe38a0"
+  - "kernelbench_level1_92__compile_error__52277656"
+  - "kernelbench_level1_92__logic_error__ad1587f9"
+  - "kernelbench_level2_12__logic_error__7a2c88a1"
+  - "kernelbench_level2_12__memory_crash__486b14be"
+  - "kernelbench_level2_3__compile_error__dd4f6cf7"
+  - "kernelbench_level2_3__logic_error__dbf34be4"
+  - "kernelbench_level2_33__compile_error__d63b694a"
   few_shot_curated_file: evaluation/few_shot_curated.json
 build:
   workdir: /tmp/cuda_debugger_v3_qwen36_27b_fewshot_matched_K3

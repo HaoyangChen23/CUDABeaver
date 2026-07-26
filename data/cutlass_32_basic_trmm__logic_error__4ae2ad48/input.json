@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_32_basic_trmm",
+  "task_id": "cutlass_32_basic_trmm__logic_error__4ae2ad48",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -15,5 +15,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_32_basic_trmm"
 }

@@ -1,5 +1,5 @@
 {
-  "task_id": "cuda_173",
+  "task_id": "cuda_173__compile_error__81485d75",
   "schema_version": 2,
   "difficulty": "hard",
   "level": "curated_cuda_pool",
@@ -13,5 +13,6 @@
   ],
   "build_command": "nvcc -I include -o test.out solution.cu src/im2col_kernel.cu test/test_main.cu -gencode arch=compute_80,code=[sm_80,compute_80]",
   "test_command": "./test.out",
-  "solution_file": "solution.cu"
+  "solution_file": "solution.cu",
+  "task_id_base": "cuda_173"
 }

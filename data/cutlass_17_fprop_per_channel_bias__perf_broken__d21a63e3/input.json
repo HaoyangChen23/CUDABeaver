@@ -1,5 +1,5 @@
 {
-  "task_id": "cutlass_17_fprop_per_channel_bias",
+  "task_id": "cutlass_17_fprop_per_channel_bias__perf_broken__d21a63e3",
   "schema_version": 2,
   "difficulty": "unknown",
   "level": "cutlass_class",
@@ -15,5 +15,6 @@
   },
   "solution_file": "solution.h",
   "required_arch": null,
-  "arch_specific": false
+  "arch_specific": false,
+  "task_id_base": "cutlass_17_fprop_per_channel_bias"
 }
