@@ -17,26 +17,6 @@ This single repository ships **everything** end-to-end:
 
 ---
 
-## Table of Contents
-
-- [Quick start](#quick-start)
-- [Repository layout](#repository-layout)
-- [Dataset card](#dataset-card)
-  - [Dataset summary](#dataset-summary)
-  - [Supported tasks](#supported-tasks)
-  - [Languages](#languages)
-  - [Dataset structure](#dataset-structure)
-  - [Dataset creation](#dataset-creation)
-  - [Considerations for using the data](#considerations-for-using-the-data)
-- [Setup](#setup)
-- [Smoke test](#smoke-test)
-- [Reproducing paper tables](#reproducing-paper-tables)
-- [Family-specific runtime requirements](#family-specific-runtime-requirements)
-- [What's NOT in the package](#whats-not-in-the-package)
-- [Authors](#authors)
-- [License](#license)
-
----
 
 ## Quick start
 
