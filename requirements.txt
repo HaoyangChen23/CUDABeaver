@@ -8,7 +8,23 @@ pandas
 numpy
 
 # Eval pipeline runtime (for vendored kernelbench + applied_kernels_runner)
+#
+# torch: install the wheel variant matching your NVIDIA DRIVER's supported
+# CUDA version, NOT the newest. A bare `pip install torch` pulls the latest
+# CUDA build (e.g. cu13x), which fails with "driver too old" on <=12.9
+# drivers (torch.cuda.is_available() -> False and every kernelbench task
+# silently scores as failed). Example for a 12.8/12.9 driver:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+# Check the driver's max supported CUDA with `nvidia-smi`.
 torch
+# ninja is REQUIRED at runtime: kernelbench candidate kernels JIT-compile via
+# torch.utils.cpp_extension, which hard-fails without it (every kernelbench
+# task then scores as compile_error).
+ninja
+# pybind11 + einops are required by the ThunderKittens-family testbenches
+# (pybind11 for the extension build, einops for the benchmark driver).
+pybind11
+einops
 pydantic
 python-dotenv
 requests

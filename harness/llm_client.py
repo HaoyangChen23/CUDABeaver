@@ -172,6 +172,13 @@ def call_llm(client, config: dict, messages: list[dict]) -> str:
         else:
             response = client.chat.completions.create(**kwargs)
             msg = response.choices[0].message
+            u = getattr(response, "usage", None)
+            if u is not None:
+                # API-spend visibility (completion includes billed reasoning tokens)
+                logger.info(
+                    f"  API usage: prompt={getattr(u, 'prompt_tokens', '?')} "
+                    f"completion={getattr(u, 'completion_tokens', '?')}"
+                )
             return (msg.content, getattr(msg, "reasoning_content", None) or getattr(msg, "reasoning", None))
 
     # Retry on empty content OR transient network/stream errors. NVIDIA-hosted

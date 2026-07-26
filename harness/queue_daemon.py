@@ -22,7 +22,9 @@ Behavior:
 Stop the daemon: kill -INT <daemon_pid>. Currently-running experiment
 keeps going.
 """
-from __future__ import annotations
+from __future__ import os
+import sys
+import annotations
 
 import argparse
 import json
@@ -35,7 +37,7 @@ from datetime import datetime
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-PYTHON = "/mnt/data/anonymous/envs/cuda-debugger-exp/bin/python"
+PYTHON = os.environ.get("CUDA_DEBUGGER_PYTHON", sys.executable)
 TS_RE = re.compile(r"^\d{8}_\d{6}$")
 
 

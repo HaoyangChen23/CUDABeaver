@@ -269,6 +269,15 @@ def run_parallel(
             try:
                 stem, records, stop_reason = future.result()
                 all_records.extend(records)
+                # Crash-safe incremental flush: append this task's records now.
+                # run_experiment's final _write_incremental_manifest rewrites the
+                # file wholesale (mode "w"), so appends never duplicate.
+                if records:
+                    idx = output_dir / "index"
+                    idx.mkdir(parents=True, exist_ok=True)
+                    with open(idx / "manifest.jsonl", "a", encoding="utf-8") as mf:
+                        for _r in records:
+                            mf.write(json.dumps(_r, ensure_ascii=False) + "\n")
                 tracker.update(stem, records, stop_reason)
             except Exception as e:
                 logger.error(f"Task {task_stem} raised exception: {e}")

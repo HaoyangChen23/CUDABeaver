@@ -26,6 +26,68 @@ from .generate_headers import setup_include_dir
 from .subprocess_util import run_pg
 
 
+
+def _detected_gpu_arch():
+    """kernelbench set_gpu_arch family for the local GPU.
+
+    Override with CUDA_DEBUGGER_GPU_ARCH (e.g. "Hopper"). Detection maps the
+    first visible GPU name from nvidia-smi; returns None when undetectable
+    (command left unchanged). Assumes homogeneous GPUs per node.
+    """
+    import subprocess as _sp
+    env = os.environ.get("CUDA_DEBUGGER_GPU_ARCH")
+    if env:
+        return env
+    global _GPU_ARCH_CACHE
+    try:
+        return _GPU_ARCH_CACHE
+    except NameError:
+        pass
+    arch = None
+    try:
+        out = _sp.run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+                      capture_output=True, text=True, timeout=10).stdout
+        name = out.strip().splitlines()[0].lower() if out.strip() else ""
+        for pat, fam in (("h100", "Hopper"), ("h200", "Hopper"), ("gh200", "Hopper"),
+                         ("blackwell", "Blackwell"), ("b100", "Blackwell"), ("b200", "Blackwell"),
+                         ("b300", "Blackwell"), ("rtx 50", "Blackwell"),
+                         ("l40", "Ada"), ("rtx 40", "Ada"),
+                         ("a100", "Ampere"), ("a30", "Ampere"), ("a40", "Ampere")):
+            if pat in name:
+                arch = fam
+                break
+    except Exception:
+        arch = None
+    _GPU_ARCH_CACHE = arch
+    return arch
+
+
+def adapt_gpu_arch_cmd(cmd: str) -> str:
+    """Rewrite a hardcoded set_gpu_arch(['<family>']) in a task command to the
+    arch of the machine actually running it. The dataset was authored on
+    Blackwell; without this, kernelbench tasks JIT-compile for the wrong arch
+    on other GPUs and fail wholesale."""
+    import re as _re
+    has_arch = "set_gpu_arch" in cmd
+    has_make_gpu = _re.search(r"\bmake\b.*\bGPU=\w+", cmd) is not None
+    if not (has_arch or has_make_gpu):
+        return cmd
+    arch = _detected_gpu_arch()
+    if not arch:
+        return cmd
+    if has_arch:
+        cmd = _re.sub(r"set_gpu_arch\(\[[^\]]*\]\)", "set_gpu_arch(['" + arch + "'])", cmd)
+    if has_make_gpu:
+        # ThunderKittens Makefiles select the kernel API branch via GPU=<name>;
+        # the corpus hardcodes the authoring machine's GPU. The wgmma-based
+        # kernels of this corpus require the H100 (sm_90a) branch on Hopper.
+        make_gpu = {"Hopper": "H100", "Blackwell": "RTX5070"}.get(arch)
+        if make_gpu:
+            cmd = _re.sub(r"\bGPU=\w+", "GPU=" + make_gpu, cmd)
+    return cmd
+
+
+
 def _fix_python_cmd(cmd: str) -> str:
     """Replace bare 'python' calls with the current interpreter path.
 
@@ -118,7 +180,7 @@ def compile_code(
         return applied_kernels_build(input_meta["task_id"], task_workdir, timeout=max(timeout, 300))
 
     # Default path — input.json build_command + nvcc
-    build_cmd = _fix_python_cmd(input_meta["build_command"])
+    build_cmd = adapt_gpu_arch_cmd(_fix_python_cmd(input_meta["build_command"]))
     build_env = _python_subprocess_env()
     try:
         result = run_pg(
@@ -156,7 +218,7 @@ def run_test(
     test_cmd = input_meta["test_command"]
     if _performance_gate_enabled(performance_gate):
         test_cmd = _enable_kernelbench_perf(test_cmd, input_meta)
-    test_cmd = _fix_python_cmd(test_cmd)
+    test_cmd = adapt_gpu_arch_cmd(_fix_python_cmd(test_cmd))
     test_env = _python_subprocess_env()
     try:
         result = run_pg(

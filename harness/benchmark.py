@@ -19,9 +19,11 @@ import tempfile
 
 from .references.schema import Reference, ReferenceSolution
 
-ROOT = Path(__file__).resolve().parents[2]
-REFS_DIR = ROOT / "evaluation/references"
-CACHE_DIR = ROOT / "evaluation/references_cache"
+# Assets root: the repo itself by default (self-contained release); override
+# with CUDA_DEBUGGER_ASSETS_ROOT to relocate references/cache/testbench data.
+ROOT = Path(os.environ["CUDA_DEBUGGER_ASSETS_ROOT"]) if os.environ.get("CUDA_DEBUGGER_ASSETS_ROOT") else Path(__file__).resolve().parents[1]
+REFS_DIR = ROOT / "benchmark/references"
+CACHE_DIR = ROOT / "benchmark/references_cache"
 
 
 def _slug(s: str) -> str:
@@ -102,7 +104,7 @@ def prepare_workdir(task_id: str, solution: ReferenceSolution) -> Path:
     for cleanup if explicitly authorized.
     """
     stem = task_id_to_stem(task_id)
-    testbench_src = ROOT / "testbench" / stem
+    testbench_src = ROOT / "data" / "testbench" / stem
     workdir = Path(tempfile.mkdtemp(prefix=f"benchmark_{stem}_"))
 
     if testbench_src.is_dir():
@@ -128,11 +130,14 @@ def prepare_workdir(task_id: str, solution: ReferenceSolution) -> Path:
 
 
 import datetime  # noqa: E402
-import os  # noqa: E402
 import time  # noqa: E402
 from typing import Tuple  # noqa: E402
 
-PYTHON_BIN = "/mnt/data/anonymous/envs/cuda-debugger-exp/bin/python"
+import sys  # noqa: E402
+
+# Interpreter used for python-based build/bench commands. Overridable so the
+# packaged harness runs outside the original environment.
+PYTHON_BIN = os.environ.get("CUDA_DEBUGGER_PYTHON", sys.executable)
 
 
 def _build_env(gpu_id: int) -> dict:
@@ -177,6 +182,7 @@ def _execute_benchmark(ref: Reference, workdir: Path, env: dict) -> Tuple[dict, 
     Then wrap the benchmark_command per the timing-mode adapter (e.g. nsys for region).
     """
     from .timing_modes import get_timing_mode
+    from .compiler import adapt_gpu_arch_cmd
 
     # Per-task isolated torch_extensions cache. LLM solutions frequently use
     # generic load_inline names (e.g. name="fused_ops"). Sharing the global
@@ -195,12 +201,12 @@ def _execute_benchmark(ref: Reference, workdir: Path, env: dict) -> Tuple[dict, 
     # does any required JIT compilation when called.
     if ref.timing_mode.type != "kernelbench_eval_result":
         stem = task_id_to_stem(ref.task_id)
-        input_json = ROOT / "input" / f"{stem}.json"
+        input_json = ROOT / "data" / "input" / f"{stem}.json"
         if input_json.exists():
             meta = json.loads(input_json.read_text())
             build_cmd = meta.get("build_command")
             if build_cmd:
-                build_cmd = re.sub(r"\bpython\b(?!3)", PYTHON_BIN, build_cmd)
+                build_cmd = adapt_gpu_arch_cmd(re.sub(r"\bpython\b(?!3)", PYTHON_BIN, build_cmd))
                 bp = _run_pg(build_cmd, cwd=workdir, env=env, timeout=300)
                 if bp.returncode != 0:
                     raise RuntimeError(
@@ -209,7 +215,7 @@ def _execute_benchmark(ref: Reference, workdir: Path, env: dict) -> Tuple[dict, 
                     )
 
     # Phase 2: benchmark
-    cmd = ref.benchmark_command
+    cmd = adapt_gpu_arch_cmd(ref.benchmark_command)
     cmd = re.sub(r"\bpython\b(?!3)", PYTHON_BIN, cmd)
     cmd = parser.wrap_command(cmd, str(workdir))
 
@@ -219,7 +225,8 @@ def _execute_benchmark(ref: Reference, workdir: Path, env: dict) -> Tuple[dict, 
     # GPU 6 holding GPU at 0% util while pegging CPU. flock the cmd by
     # CUDA_VISIBLE_DEVICES so only one perf process at a time per physical GPU.
     gpu_for_lock = env.get("CUDA_VISIBLE_DEVICES", "0").split(",")[0].strip() or "0"
-    lock_path = f"/tmp/cuda_debugger_perf_lock_gpu{gpu_for_lock}.lock"
+    lock_dir = os.environ.get("CUDA_DEBUGGER_LOCK_DIR", "/tmp")
+    lock_path = f"{lock_dir}/cuda_debugger_perf_lock_gpu{gpu_for_lock}.lock"
     import shlex
     cmd = f"flock {shlex.quote(lock_path)} sh -c {shlex.quote(cmd)}"
 
